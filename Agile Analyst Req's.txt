@@ -1,9 +1,0 @@
-﻿Machine Learning – Affective Analysis in Natural Language Processing
-
-Summary: Use Supervised Classification to train learner(s) to label bodies of text. The total number of possible labels can be variable, up to a maximum amount for which the model is initially trained (~400). However, word frequency cut-offs will have to be decided in advance and applied to the training data used to train a particular model. 
-
-Requirements: Affectively-labeled data, with a number of labels for each sample equal to or greater than the maximum amount we want the trained model to be able to classify for each sample. The total number of possible labels should also be greater than or equal to the universe of possible labels our model will be able to apply. 
-
-Preferred Format: CSV data, where each row is a sample/label(s) pairing. The first column will contain the sample text the model was trained on, and each subsequent column will contain a numerical score for each of the emotions for which the model is to be trained.  
-
-Number of Samples: Each emotion to be classified is essentially a dimension of the data. Every word which signifies specific emotions lies somewhere within each of these emotional dimensions. Some sample words are likely to have only negligible values in all of the emotional dimensions, and any given sample is likely to only contain some of the possible words contained in an emotional dimension. These facts taken together, with our initial number of dimensions at 400, enough samples should be present in training for the model to learn to distinguish the various possible words contained within each label. The bare minimum samples would be 400, but any factor of this would be even better for obtaining a well-trained, accurate classifier and regression model. 
