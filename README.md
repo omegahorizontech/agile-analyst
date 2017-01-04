@@ -30,6 +30,13 @@ _From a terminal, start mongo:_
   </code>
 </pre>
 
+# Run the application
+<pre>
+  <code>
+    python app/runserver.py 5000
+  </code>
+</pre>
+
 # Requirements
 
 * Flask==0.10.1

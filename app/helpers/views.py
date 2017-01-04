@@ -9,3 +9,67 @@ helpers = Blueprint('helpers', __name__)
 def verify_api_01():
     response = controllers.hello()
     return response
+
+'''
+save_full_record
+===
+This method always does the entire emotion_ml set (400 as of 03-Jan-2016)
+'''
+@helpers.route('/save-record/<collection_name>/', methods=['POST'])
+def save_full_record(collection_name):
+    r = request.get_json()
+
+    doc = r.get('doc')
+    lang = r.get('lang')
+    upper_bound = r.get('ub')
+    lower_bound = r.get('lb')
+    # TODO: Add Error Handling
+    natural = r.get('natural')
+    stemmer = r.get('stemmer')
+    lemma = r.get('lemma')
+
+    data = {
+        "doc": doc,
+        "lang": lang,
+        "upper_bound": upper_bound,
+        "lower_bound": lower_bound,
+        "natural": natural,
+        "stemmer": stemmer,
+        "lemma": lemma,
+    }
+
+    response = controllers.save_record(collection_name, data)
+    return response
+
+
+'''
+save_full_records
+===
+This method always does the entire emotion_ml set (400 as of 03-Jan-2016)
+'''
+@helpers.route('/save-records/<collection_name>/', methods=['POST'])
+def save_many_full_records(collection_name):
+    r = request.get_json()
+
+    docs = r.get('docs')
+    lang = r.get('lang')
+    upper_bound = r.get('ub')
+    lower_bound = r.get('lb')
+    # TODO: Add Error Handling
+    natural = r.get('natural')
+    stemmer = r.get('stemmer')
+    lemma = r.get('lemma')
+
+    for doc in docs:
+        data = {
+            "doc": doc,
+            "lang": lang,
+            "upper_bound": upper_bound,
+            "lower_bound": lower_bound,
+            "natural": natural,
+            "stemmer": stemmer,
+            "lemma": lemma,
+        }
+        controllers.save_record(collection_name, data)
+
+    return "Success"
