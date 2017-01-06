@@ -112,3 +112,18 @@ def save_full_records_from_gutenberg(collection_name):
         controllers.save_record(collection_name, data)
 
     return "Success"
+
+'''
+write_csv_from_json
+===
+Converts json records to csv file(s)
+from mongo database (based on collection name)
+'''
+@helpers.route('/convert-gutenberg-records/<collection_name>/', methods=['POST'])
+def write_csv_from_json(collection_name):
+    r = request.get_json()
+
+    corpus_name = r.get('corpus_name')
+    controllers.write_csv_from_json(collection_name, corpus_name)
+
+    return "Success"
