@@ -41,6 +41,7 @@ def save_record(collection_name, data):
 
 def write_csv_from_json(collection_name, corpus_name):
 
+    # TODO: Does this break sentences apart well, or is there some kind of wierd line break?
     guten_sents = gutenberg.sents(corpus_name + '.txt')
 
     print "===="
@@ -50,7 +51,7 @@ def write_csv_from_json(collection_name, corpus_name):
     csv_writer = csv.writer(csv_file)
     collection = affect_analysis.db[collection_name]
     cursor = collection.find()
-    emotion_list = ['sample_doc']
+    emotion_list = ['sample_doc'] # This is the first coloumn header, more are appended
     for i in range(cursor.count()):
         if (i % 50) == 0:
             print 'Processed record: ' + str(i)

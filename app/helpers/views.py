@@ -97,8 +97,14 @@ def save_full_records_from_gutenberg(collection_name):
 
     guten_sents = gutenberg.sents(corpus_name + '.txt')
 
+    count = 0
     for sent in guten_sents:
         sent = ' '.join(sent)
+        if (count % 50) == 0:
+            print '===='
+            print 'Processed record: ' + str(count)
+            print '===='
+        count = count + 1
         print sent
         data = {
             "doc": sent,
