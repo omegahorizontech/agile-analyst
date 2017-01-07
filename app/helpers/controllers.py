@@ -39,16 +39,15 @@ def save_record(collection_name, data):
     collection.insert(r)
     return "Success"
 
-def write_csv_from_json(collection_name, corpus_name):
+def write_csv_from_json(collection_name, corpus_name, use_json_sentence):
 
-    # TODO: Does this break sentences apart well, or is there some kind of wierd line break?
     guten_sents = gutenberg.sents(corpus_name + '.txt')
 
     print "===="
     print "Writing CSV file from: '" + collection_name + "'"
     print "==== Total records: " + str(affect_analysis.db[collection_name].count()) + " ===="
     csv_file = open(os.path.dirname(__file__) + '/../../data/' + collection_name + '(' + utc + ')' + '.csv', 'w')
-    csv_writer = csv.writer(csv_file)
+    csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
     collection = affect_analysis.db[collection_name]
     cursor = collection.find()
     emotion_list = ['sample_doc'] # This is the first coloumn header, more are appended
@@ -56,8 +55,11 @@ def write_csv_from_json(collection_name, corpus_name):
         if (i % 50) == 0:
             print 'Processed record: ' + str(i)
         emotion_row_scores = []
-        sample_sent = ' '.join(guten_sents[i])
-        # print sample_sent
+        sample_sent = ''
+        if use_json_sentence == '1':
+            sample_sent = cursor[i]['doc']
+        if use_json_sentence == '0':
+            sample_sent = ' '.join(guten_sents[i])
         emotion_row_scores.append(sample_sent)
         for j in range(len(cursor[i]['emotion_set'])):
             if i < 1:

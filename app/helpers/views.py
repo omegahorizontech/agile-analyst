@@ -130,6 +130,7 @@ def write_csv_from_json(collection_name):
     r = request.get_json()
 
     corpus_name = r.get('corpus_name')
-    controllers.write_csv_from_json(collection_name, corpus_name)
+    use_json_sentence = r.get('use_json_sentence')
+    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence)
 
     return "Success"
