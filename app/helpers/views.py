@@ -97,8 +97,14 @@ def save_full_records_from_gutenberg(collection_name):
 
     guten_sents = gutenberg.sents(corpus_name + '.txt')
 
+    count = 0
     for sent in guten_sents:
         sent = ' '.join(sent)
+        if (count % 50) == 0:
+            print '===='
+            print 'Processed record: ' + str(count)
+            print '===='
+        count = count + 1
         print sent
         data = {
             "doc": sent,
@@ -110,5 +116,21 @@ def save_full_records_from_gutenberg(collection_name):
             "lemma": lemma,
         }
         controllers.save_record(collection_name, data)
+
+    return "Success"
+
+'''
+write_csv_from_json
+===
+Converts json records to csv file(s)
+from mongo database (based on collection name)
+'''
+@helpers.route('/convert-gutenberg-records/<collection_name>/', methods=['POST'])
+def write_csv_from_json(collection_name):
+    r = request.get_json()
+
+    corpus_name = r.get('corpus_name')
+    use_json_sentence = r.get('use_json_sentence')
+    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence)
 
     return "Success"
