@@ -1,0 +1,10 @@
+Process for building training data
+
+0. Be sure to read the README.md file in the project for more information
+1. Write the script and coding, and tweak the technical implementation of gathering all raw data
+2. Make sure to set the paramaters correctly, including the passage of text if using NLTK corpora
+3. Run the code to generate JSON which in turn loads into mongodb, then wait until this finishes before starting step 4
+4. Run the code to generate the CSV file which creates a file in <root>/data/, the data is parsed from the mongodb instance where the JSON was saved in step 3
+
+Process for building the ML model
+TBD
