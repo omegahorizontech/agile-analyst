@@ -177,11 +177,21 @@ Converts json records to csv file(s)
 from mongo database (based on collection name)
 '''
 @helpers.route('/convert-gutenberg-records/<collection_name>/', methods=['POST'])
-def write_csv_from_json(collection_name):
+def write_csv_from_json_gutenberg(collection_name):
     r = request.get_json()
 
     corpus_name = r.get('corpus_name')
     use_json_sentence = r.get('use_json_sentence')
-    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence)
+    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence, '0')
+
+    return "Success"
+
+@helpers.route('/convert-nps_chats-records/<collection_name>/', methods=['POST'])
+def write_csv_from_json_chat(collection_name):
+    r = request.get_json()
+
+    corpus_name = r.get('corpus_name')
+    use_json_sentence = r.get('use_json_sentence')
+    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence, '1')
 
     return "Success"
