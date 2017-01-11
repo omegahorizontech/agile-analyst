@@ -148,18 +148,25 @@ def save_full_records_from_nps_chat(collection_name):
             print '===='
             print 'Processed record: ' + str(count)
             print '===='
+
+        if post == 'JOIN':
+            pass
+        elif post == 'PART':
+            pass
+        else:
+            print post
+            data = {
+                "doc": post,
+                "lang": lang,
+                "upper_bound": upper_bound,
+                "lower_bound": lower_bound,
+                "natural": natural,
+                "stemmer": stemmer,
+                "lemma": lemma,
+            }
+            controllers.save_record(collection_name, data)
+
         count = count + 1
-        print post
-        data = {
-            "doc": post,
-            "lang": lang,
-            "upper_bound": upper_bound,
-            "lower_bound": lower_bound,
-            "natural": natural,
-            "stemmer": stemmer,
-            "lemma": lemma,
-        }
-        controllers.save_record(collection_name, data)
 
     return "Success"
 
