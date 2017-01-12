@@ -2,6 +2,7 @@ from flask import jsonify
 import requests, operator, math, json, csv, os
 
 from nltk.corpus import gutenberg
+from nltk.corpus import nps_chat
 
 from datetime import datetime
 
@@ -39,9 +40,14 @@ def save_record(collection_name, data):
     collection.insert(r)
     return "Success"
 
-def write_csv_from_json(collection_name, corpus_name, use_json_sentence):
+def write_csv_from_json(collection_name, corpus_name, use_json_sentence, corpus_type):
 
-    guten_sents = gutenberg.sents(corpus_name + '.txt')
+    corpus_sents = []
+    if corpus_type == '0':
+        corpus_sents = gutenberg.sents(corpus_name + '.txt')
+    if corpus_type == '1':
+        corpus_sents = nps_chat.posts(corpus_name + '.xml')
+
 
     print "===="
     print "Writing CSV file from: '" + collection_name + "'"
@@ -59,7 +65,7 @@ def write_csv_from_json(collection_name, corpus_name, use_json_sentence):
         if use_json_sentence == '1':
             sample_sent = cursor[i]['doc']
         if use_json_sentence == '0':
-            sample_sent = ' '.join(guten_sents[i])
+            sample_sent = ' '.join(corpus_sents[i])
         emotion_row_scores.append(sample_sent)
         for j in range(len(cursor[i]['emotion_set'])):
             if i < 1:
