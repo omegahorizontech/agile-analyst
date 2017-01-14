@@ -37,6 +37,26 @@ _From a terminal, start mongo:_
   </code>
 </pre>
 
+# Stats for processing/labeling corpora
+Re-running any of the data is requires processing time, but the CSV output is saved in the data directory for convenience. The statistics for my computer are listed below.
+
+Running ubuntu 14.04 LTS
+Memory: 15.6
+Processor: AMD FX(tm)-9370 Eight-Core Processor × 8
+Graphics: GeForce GTX 760/PCIe/SSE2
+OS type: 64-bit
+
+Running a single processor core: 
+
+* austen-sense.txt - 10.37hr (phase 1 JSON) - 12.60hr (phase 2 CSV)
+* milton-paradise.txt	- 3.06hr (phase 1 JSON) -	4.36hr (phase 2 CSV)
+* shakespeare-macbeth.txt	- 5.95hr (phase 1 JSON) -	4.40hr (phase 2 CSV)
+* 10-19-20s_706posts.xml - 0.69hr	(phase 1 JSON) -	1.10hr (phase 2 CSV)
+* 10-19-30s_705posts.xml - 0.74hr	(phase 1 JSON) -	1.19hr (phase 2 CSV)
+* 10-19-40s_686posts.xml - 0.73hr (phase 1 JSON) - 1.17hr (phase 2 CSV)
+* 10-19-adults_706posts.xml	- 0.79hr (phase 1 JSON) - 1.19hr (phase 2 CSV)
+
+
 # Requirements
 
 * Flask==0.10.1

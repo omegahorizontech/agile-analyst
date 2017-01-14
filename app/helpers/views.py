@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, jsonify, request
 
 from nltk.corpus import gutenberg
 from nltk.corpus import nps_chat
+from nltk.corpus import brown
 
 import controllers
 
@@ -167,6 +168,49 @@ def save_full_records_from_nps_chat(collection_name):
             controllers.save_record(collection_name, data)
 
         count = count + 1
+
+    return "Success"
+
+'''
+save_full_records_from_nps_chat
+===
+This method looks at brown corpus from NLTK and saves the records to use as
+training/testing data for ML purposes
+'''
+@helpers.route('/save-brown-records/<collection_name>/', methods=['POST'])
+def save_full_records_from_brown(collection_name):
+    r = request.get_json()
+
+    corpus_name = r.get('corpus_name')
+    lang = r.get('lang')
+    upper_bound = r.get('ub')
+    lower_bound = r.get('lb')
+    # TODO: Add Error Handling
+    natural = r.get('natural')
+    stemmer = r.get('stemmer')
+    lemma = r.get('lemma')
+
+    news_text_sent = brown.sents(categories='news')
+
+    count = 0
+    for sent in news_text_sent:
+        sent = ' '.join(sent)
+        if (count % 50) == 0:
+            print '===='
+            print 'Processed record: ' + str(count)
+            print '===='
+        count = count + 1
+        print sent
+        data = {
+            "doc": sent,
+            "lang": lang,
+            "upper_bound": upper_bound,
+            "lower_bound": lower_bound,
+            "natural": natural,
+            "stemmer": stemmer,
+            "lemma": lemma,
+        }
+        controllers.save_record(collection_name, data)
 
     return "Success"
 
