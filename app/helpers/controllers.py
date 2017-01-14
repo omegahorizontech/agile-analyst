@@ -3,6 +3,7 @@ import requests, operator, math, json, csv, os
 
 from nltk.corpus import gutenberg
 from nltk.corpus import nps_chat
+from nltk.corpus import brown
 
 from datetime import datetime
 
@@ -47,6 +48,8 @@ def write_csv_from_json(collection_name, corpus_name, use_json_sentence, corpus_
         corpus_sents = gutenberg.sents(corpus_name + '.txt')
     if corpus_type == '1':
         corpus_sents = nps_chat.posts(corpus_name + '.xml')
+    if corpus_type == '2':
+        corpus_sents = brown.sents(categories=corpus_name)
 
 
     print "===="
