@@ -190,7 +190,7 @@ def save_full_records_from_brown(collection_name):
     stemmer = r.get('stemmer')
     lemma = r.get('lemma')
 
-    news_text_sent = brown.sents(categories='news')
+    news_text_sent = brown.sents(categories=corpus_name)
 
     count = 0
     for sent in news_text_sent:
@@ -237,5 +237,15 @@ def write_csv_from_json_chat(collection_name):
     corpus_name = r.get('corpus_name')
     use_json_sentence = r.get('use_json_sentence')
     controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence, '1')
+
+    return "Success"
+
+@helpers.route('/convert-brown-records/<collection_name>/', methods=['POST'])
+def write_csv_from_json_brown(collection_name):
+    r = request.get_json()
+
+    corpus_name = r.get('corpus_name')
+    use_json_sentence = r.get('use_json_sentence')
+    controllers.write_csv_from_json(collection_name, corpus_name, use_json_sentence, '2')
 
     return "Success"
