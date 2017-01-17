@@ -9,3 +9,13 @@ ml_models = Blueprint('ml_models', __name__)
 def verify_api_01():
     response = controllers.hello()
     return response
+
+@ml_models.route('/prepare')
+def prep_data():
+    response = controllers.prepareData()
+    return response
+
+@ml_models.route('/train')
+def train_model():
+    response = controllers.trainModel()
+    return response
