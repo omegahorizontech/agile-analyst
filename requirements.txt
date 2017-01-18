@@ -10,3 +10,7 @@ nltk==3.2.1
 requests==2.10.0
 Flask-PyMongo==0.3.1
 pymongo==2.9.3
+scipy==0.18.1
+numpy==1.11.1
+scikit-learn==0.18.1
+pandas==0.18.1

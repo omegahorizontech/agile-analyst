@@ -37,6 +37,25 @@ _From a terminal, start mongo:_
   </code>
 </pre>
 
+# Known hic-ups
+You might need to install LAPACK (Linear Algebra Package) to solve errors like this one:
+*numpy.distutils.system_info.NotFoundError: no lapack/blas resources found*
+
+On Ubuntu 14.04, this solved that error:
+<pre>
+  <code>
+    sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev gfortran
+  </code>
+</pre>
+
+Then, this installing scipy with pip should work:
+
+<pre>
+  <code>
+    pip install scipy
+  </code>
+</pre>
+
 # Stats for processing/labeling corpora
 Re-running any of the data is requires processing time, but the CSV output is saved in the data directory for convenience. The statistics for my computer are listed below.
 
@@ -70,6 +89,10 @@ Running a single processor core:
 * requests==2.10.0
 * Flask-PyMongo==0.3.1
 * pymongo==2.9.3
+* scipy==0.18.1
+* numpy==1.11.1
+* scikit-learn==0.18.1
+* pandas==0.18.1
 
 # License
 MIT
