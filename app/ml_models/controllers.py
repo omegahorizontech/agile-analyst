@@ -4,6 +4,10 @@ import requests, operator, math, json, csv, os
 from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+
 import pandas as pd
 import numpy as np
 
@@ -22,14 +26,24 @@ def prepareData():
 def trainModel():
     data = prepareData()
     split = ShuffleSplit(n_splits=10, test_size=0.30, random_state=42)
-    # Perform one-hot encoding on string data 
+    # Perform one-hot encoding on string data
     X = pd.DataFrame(data['sample_doc'])
     y = pd.DataFrame(data[data.columns[1:400]])
     groups = split.split(X, y)
 
+    le = LabelEncoder()
+    enc = OneHotEncoder()
+
+    X_array = np.ravel(X)
+    encoded = le.fit_transform(X_array)
+    encoded = np.reshape(encoded,(-1,1))
+    onehotlabels = enc.fit_transform(encoded).toarray()
+    print onehotlabels.shape
+
     reg = DTR()
-    scorer = CVS(reg, X, y, cv=split)
-    print scorer
+    scorer = CVS(reg, onehotlabels, y, cv=split)
+    for score in scorer:
+        print score
 
     return 'training model'
 
