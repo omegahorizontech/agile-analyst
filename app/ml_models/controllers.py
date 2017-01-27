@@ -31,14 +31,16 @@ def prepareData():
     counter = Counter()
     for sample in X_array:
         # TODO: Find unique words, use them as encoding labels
-        # counter.update(sample)
-        print sample
+        words = sample.split(' ')
+        counter.update(words)
+    print len(counter)
 
     # TODO: Use the encoded labels to one-hot encode each sample
-    encoded = le.fit_transform(X_array)
-    encoded = np.reshape(encoded,(-1,1))
-    onehotlabels = enc.fit_transform(encoded).toarray()
-    print onehotlabels.shape
+    encoded = le.fit_transform(counter.keys())
+    # encoded = np.reshape(encoded,(-1,1))
+    print encoded
+    # onehotlabels = enc.fit_transform().toarray()
+    # print onehotlabels.shape, onehotlabels
 
     # TODO: Return one-hot encoded data and labels
     return 'Data prepared'
