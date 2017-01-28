@@ -16,6 +16,8 @@ from collections import Counter
 def hello():
     return 'hello machines'
 
+enc_samples = []
+y = []
 # Read data from the csv
 # Place it into a dataframe
 def prepareData():
@@ -35,28 +37,44 @@ def prepareData():
         counter.update(words)
     print len(counter)
 
+    # Build a dictionary of unique words and the corresponding one hot label. We'll use this to encode the samples
+    features = counter.keys()
+
+
     # TODO: Use the encoded labels to one-hot encode each sample
     encoded = le.fit_transform(counter.keys())
     # encoded = np.reshape(encoded,(-1,1))
-    print encoded
+    decoded = le.inverse_transform(encoded)
+    codex = dict(zip(decoded, encoded))
+
+    enc_samples = []
     # onehotlabels = enc.fit_transform().toarray()
     # print onehotlabels.shape, onehotlabels
+    for sample in X_array:
+        words = sample.split(' ')
+        trans_sample = []
+        for word in words:
+            if word in codex:
+                trans_sample.append(codex[word])
+        enc_samples.append(trans_sample)
 
-    # TODO: Return one-hot encoded data and labels
-    return 'Data prepared'
+    enc_samples = np.array(enc_samples)
+
+    print enc_samples
+
+    # TODO: Return encoded data and labels
+    return 'data prepared'
+
 
 # Do a shufflesplit or other cross-validation
 # Train a classifier on the data and labels
 def trainModel():
-    # data = prepareData()
+
     # data = data[:400]
     split = ShuffleSplit(n_splits=10, test_size=0.30, random_state=42)
-    # Perform one-hot encoding on string data
-    groups = split.split(X, y)
-
 
     reg = DTR()
-    scorer = CVS(reg, onehotlabels, y, cv=split)
+    scorer = CVS(reg, enc_samples, y, cv=split)
     for score in scorer:
         print score
 
