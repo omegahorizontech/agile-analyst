@@ -20,7 +20,7 @@ enc_samples = []
 y = []
 # Read data from the csv
 # Place it into a dataframe
-def prepareData():
+def prepare_data(as_generator=False):
     filename = 'austen-sense-400-1N1S1L2U2L(2017-01-07 23:41:04.780)'
     data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
     X = pd.DataFrame(data['sample_doc'])
@@ -48,6 +48,7 @@ def prepareData():
     codex = dict(zip(decoded, encoded))
 
     enc_samples = []
+
     # onehotlabels = enc.fit_transform().toarray()
     # print onehotlabels.shape, onehotlabels
     for sample in X_array:
@@ -60,18 +61,25 @@ def prepareData():
 
     enc_samples = np.array(enc_samples)
 
-    print enc_samples
+    # print enc_samples
 
     # TODO: Return encoded data and labels
-    return 'data prepared'
+    if not as_generator:
+        return 'data prepared'
+    else:
+        return enc_samples
 
 
 # Do a shufflesplit or other cross-validation
 # Train a classifier on the data and labels
-def trainModel():
+def train_model():
+    enc_samples = prepare_data(True)
+    # enc_samples = np.reshape(enc_samples,(-1,1))
+    print enc_samples
 
     # data = data[:400]
     split = ShuffleSplit(n_splits=10, test_size=0.30, random_state=42)
+
 
     reg = DTR()
     scorer = CVS(reg, enc_samples, y, cv=split)
@@ -81,5 +89,5 @@ def trainModel():
     return 'training model'
 
 # Measure model performance with CV
-def validateModel():
+def validate_model():
     return 'validating model'

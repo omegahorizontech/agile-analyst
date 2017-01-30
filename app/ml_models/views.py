@@ -12,10 +12,10 @@ def verify_api_01():
 
 @ml_models.route('/prepare')
 def prep_data():
-    response = controllers.prepareData()
+    response = controllers.prepare_data()
     return response
 
 @ml_models.route('/train')
 def train_model():
-    response = controllers.trainModel()
+    response = controllers.train_model()
     return response
