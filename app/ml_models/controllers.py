@@ -8,6 +8,8 @@ from sklearn.model_selection import cross_val_score as CVS
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
+from sklearn.feature_extraction import DictVectorizer
+
 import pandas as pd
 import numpy as np
 
@@ -30,44 +32,25 @@ def prepare_data(as_generator=False):
     enc = OneHotEncoder()
 
     X_array = np.ravel(X)
-    counter = Counter()
-    for sample in X_array:
-        # TODO: Find unique words, use them as encoding labels
+
+    # Initialize DictVectorizer and an empty sparse_matrix to store vectors
+    vectorizer = DictVectorizer(sparse=False)
+    sparse_matrix = []
+    # Find unique words, use them as encoding labels
+    for sample in X_array[17:20]:
         words = sample.split(' ')
-        counter.update(words)
-    print len(counter)
+        counted_sample = Counter()
+        counted_sample.update(words)
+        sparse_matrix.append(dict(counted_sample))
 
-    # Build a dictionary of unique words and the corresponding one hot label. We'll use this to encode the samples
-    features = counter.keys()
-
-
-    # TODO: Use the encoded labels to one-hot encode each sample
-    encoded = le.fit_transform(counter.keys())
-    # encoded = np.reshape(encoded,(-1,1))
-    decoded = le.inverse_transform(encoded)
-    codex = dict(zip(decoded, encoded))
-
-    enc_samples = []
-
-    # onehotlabels = enc.fit_transform().toarray()
-    # print onehotlabels.shape, onehotlabels
-    for sample in X_array:
-        words = sample.split(' ')
-        trans_sample = []
-        for word in words:
-            if word in codex:
-                trans_sample.append(codex[word])
-        enc_samples.append(trans_sample)
-
-    enc_samples = np.array(enc_samples)
-
-    # print enc_samples
+    # X is the list of 'fit_transformed' vectors
+    X = vectorizer.fit_transform(sparse_matrix)
 
     # TODO: Return encoded data and labels
     if not as_generator:
         return 'data prepared'
     else:
-        return enc_samples
+        return X, y
 
 
 # Do a shufflesplit or other cross-validation
