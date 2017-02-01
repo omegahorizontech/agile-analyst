@@ -38,6 +38,7 @@ _From a terminal, start mongo:_
 </pre>
 
 # Known hic-ups
+1)
 You might need to install LAPACK (Linear Algebra Package) to solve errors like this one:
 *numpy.distutils.system_info.NotFoundError: no lapack/blas resources found*
 
@@ -56,6 +57,19 @@ Then, this installing scipy with pip should work:
   </code>
 </pre>
 
+2)
+If you upgrade your Ubuntu operating system, you might have packages that have been moved.
+One solution is to remove your virtual environment directory and rebuild it. Another is to do
+the following:
+
+<pre>
+  <code>
+    virtualenv --no-site-packages
+  </code>
+</pre>
+
+This method might not work very well for scikit-learn, and I decided to destroy and rebuild
+my virtualenv directory to make it work again.
 # Stats for processing/labeling corpora
 Re-running any of the data is requires processing time, but the CSV output is saved in the data directory for convenience. The statistics for my computer are listed below.
 
@@ -65,7 +79,7 @@ Processor: AMD FX(tm)-9370 Eight-Core Processor × 8
 Graphics: GeForce GTX 760/PCIe/SSE2
 OS type: 64-bit
 
-Running a single processor core: 
+Running a single processor core:
 
 * austen-sense.txt - 10.37hr (phase 1 JSON) - 12.60hr (phase 2 CSV)
 * milton-paradise.txt	- 3.06hr (phase 1 JSON) -	4.36hr (phase 2 CSV)

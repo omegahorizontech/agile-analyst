@@ -8,10 +8,13 @@ from sklearn.model_selection import cross_val_score as CVS
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
+from sklearn.feature_extraction import DictVectorizer
+
 import pandas as pd
 import numpy as np
 
 from collections import Counter
+import time
 
 def hello():
     return 'hello machines'
@@ -30,62 +33,42 @@ def prepare_data(as_generator=False):
     enc = OneHotEncoder()
 
     X_array = np.ravel(X)
-    counter = Counter()
-    for sample in X_array:
-        # TODO: Find unique words, use them as encoding labels
-        words = sample.split(' ')
-        counter.update(words)
-    print len(counter)
 
-    # Build a dictionary of unique words and the corresponding one hot label. We'll use this to encode the samples
-    features = counter.keys()
-
-
-    # TODO: Use the encoded labels to one-hot encode each sample
-    encoded = le.fit_transform(counter.keys())
-    # encoded = np.reshape(encoded,(-1,1))
-    decoded = le.inverse_transform(encoded)
-    codex = dict(zip(decoded, encoded))
-
-    enc_samples = []
-
-    # onehotlabels = enc.fit_transform().toarray()
-    # print onehotlabels.shape, onehotlabels
+    # Initialize DictVectorizer and an empty sparse_matrix to store vectors
+    vectorizer = DictVectorizer(sparse=False)
+    sparse_matrix = []
+    # Find unique words, use them as encoding labels
     for sample in X_array:
         words = sample.split(' ')
-        trans_sample = []
-        for word in words:
-            if word in codex:
-                trans_sample.append(codex[word])
-        enc_samples.append(trans_sample)
+        counted_sample = Counter()
+        counted_sample.update(words)
+        sparse_matrix.append(dict(counted_sample))
 
-    enc_samples = np.array(enc_samples)
-
-    # print enc_samples
-
+    # X is the list of 'fit_transformed' vectors
+    X = vectorizer.fit_transform(sparse_matrix)
+    print X
     # TODO: Return encoded data and labels
     if not as_generator:
         return 'data prepared'
     else:
-        return enc_samples
+        return X, y
 
 
 # Do a shufflesplit or other cross-validation
 # Train a classifier on the data and labels
 def train_model():
-    enc_samples = prepare_data(True)
-    # enc_samples = np.reshape(enc_samples,(-1,1))
-    print enc_samples
+    X,y = prepare_data(True)
 
-    # data = data[:400]
+    print X[:1000]
     split = ShuffleSplit(n_splits=10, test_size=0.30, random_state=42)
-
-
+    t_1 = time.clock()
     reg = DTR()
-    scorer = CVS(reg, enc_samples, y, cv=split)
+    scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     for score in scorer:
         print score
 
+    t_2 = time.clock()
+    print "Total time: ", t_2-t_1
     return 'training model'
 
 # Measure model performance with CV
