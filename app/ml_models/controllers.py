@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 
 from collections import Counter
+import time
 
 def hello():
     return 'hello machines'
@@ -37,7 +38,7 @@ def prepare_data(as_generator=False):
     vectorizer = DictVectorizer(sparse=False)
     sparse_matrix = []
     # Find unique words, use them as encoding labels
-    for sample in X_array[17:20]:
+    for sample in X_array:
         words = sample.split(' ')
         counted_sample = Counter()
         counted_sample.update(words)
@@ -45,7 +46,7 @@ def prepare_data(as_generator=False):
 
     # X is the list of 'fit_transformed' vectors
     X = vectorizer.fit_transform(sparse_matrix)
-
+    print X
     # TODO: Return encoded data and labels
     if not as_generator:
         return 'data prepared'
@@ -56,19 +57,18 @@ def prepare_data(as_generator=False):
 # Do a shufflesplit or other cross-validation
 # Train a classifier on the data and labels
 def train_model():
-    enc_samples = prepare_data(True)
-    # enc_samples = np.reshape(enc_samples,(-1,1))
-    print enc_samples
+    X,y = prepare_data(True)
 
-    # data = data[:400]
+    print X[:1000]
     split = ShuffleSplit(n_splits=10, test_size=0.30, random_state=42)
-
-
+    t_1 = time.clock()
     reg = DTR()
-    scorer = CVS(reg, enc_samples, y, cv=split)
+    scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     for score in scorer:
         print score
 
+    t_2 = time.clock()
+    print "Total time: ", t_2-t_1
     return 'training model'
 
 # Measure model performance with CV
