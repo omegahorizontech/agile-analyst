@@ -3,6 +3,8 @@ import requests, operator, math, json, csv, os
 import matplotlib.pyplot as plt
 
 from sklearn.tree import DecisionTreeRegressor as DTR
+from sklearn.ensemble import RandomForestRegressor as RFR
+from sklearn.ensemble import ExtraTreesRegressor as ETR
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.model_selection import learning_curve
@@ -62,9 +64,13 @@ def train_model():
     X,y = prepare_data(True)
 
     print X[:1000]
-    split = ShuffleSplit(n_splits=3, test_size=0.30, random_state=42)
+    split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
     t_1 = time.clock()
     estimator = DTR()
+    estimator2 = RFR()
+    estimator3 = RFR(n_estimators=40, n_jobs=-1, random_state=21)
+
+    estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -138,9 +144,14 @@ def train_model():
         plt.legend(loc="best")
         return plt
 
-    title = "Learning Curves (stock DTR)"
-    plot_learning_curve(estimator, title, X[:3000], y[:3000], (0.1, 1.01), split, n_jobs=1)
+    # title = "Learning Curves (RFR)"
+    # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
+    # plt.show()
+
+    title = "Learning Curves (ETR, 100 estimators, random_state 12, bootstrapping, max_features 66%)"
+    plot_learning_curve(estimator4, title, X[:4999], y[:4999], (0.1, 1.01), split, n_jobs=-1)
     plt.show()
+
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
     return 'training model'
