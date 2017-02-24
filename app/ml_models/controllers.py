@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.ensemble import RandomForestRegressor as RFR
 from sklearn.ensemble import ExtraTreesRegressor as ETR
+from sklearn.svm import SVR
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.model_selection import learning_curve
@@ -50,7 +51,7 @@ def prepare_data(as_generator=False):
 
     # X is the list of 'fit_transformed' vectors
     X = vectorizer.fit_transform(sparse_matrix)
-    print X
+    # print X
     # TODO: Return encoded data and labels
     if not as_generator:
         return 'data prepared'
@@ -62,8 +63,9 @@ def prepare_data(as_generator=False):
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
-
-    print X[:1000]
+    y = y[y.columns[1]]
+    print 'this should be y', y
+    # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
     t_1 = time.clock()
     estimator = DTR()
@@ -71,6 +73,8 @@ def train_model():
     estimator3 = RFR(n_estimators=40, n_jobs=-1, random_state=21)
 
     estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
+
+    estimator5 = SVR()
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -148,8 +152,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (ETR, 100 estimators, random_state 12, bootstrapping, max_features 66%)"
-    plot_learning_curve(estimator4, title, X[:4999], y[:4999], (0.1, 1.01), split, n_jobs=-1)
+    title = "Learning Curves (Stock SVR, 2k samples)"
+    plot_learning_curve(estimator5, title, X[:4999], y[:4999], (0.1, 1.01), split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
