@@ -6,6 +6,9 @@ from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.ensemble import RandomForestRegressor as RFR
 from sklearn.ensemble import ExtraTreesRegressor as ETR
 from sklearn.svm import SVR
+from sklearn.linear_model import SGDRegressor as SGDR
+from sklearn.linear_model import ElasticNet as EN
+
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.model_selection import learning_curve
@@ -63,7 +66,7 @@ def prepare_data(as_generator=False):
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
-    y = y[y.columns[1]]
+    y = y[y.columns[3]]
     print 'this should be y', y
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
@@ -74,7 +77,11 @@ def train_model():
 
     estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
 
-    estimator5 = SVR()
+    estimator5 = SVR(kernel='poly')
+
+    estimator6 = SGDR(learning_rate='optimal', n_iter=12)
+
+    estimator7 = EN()
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -153,7 +160,7 @@ def train_model():
     # plt.show()
 
     title = "Learning Curves (Stock SVR, 2k samples)"
-    plot_learning_curve(estimator5, title, X[:4999], y[:4999], (0.1, 1.01), split, n_jobs=-1)
+    plot_learning_curve(estimator6, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
