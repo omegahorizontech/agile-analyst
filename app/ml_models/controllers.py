@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.ensemble import RandomForestRegressor as RFR
 from sklearn.ensemble import ExtraTreesRegressor as ETR
 from sklearn.svm import SVR
-from sklearn.linear_model import SGDRegressor as SGDR
+from sklearn.ensemble import AdaBoostRegressor as ABR
 from sklearn.linear_model import ElasticNet as EN
 
 from sklearn.model_selection import ShuffleSplit
@@ -54,6 +54,8 @@ def prepare_data(as_generator=False):
 
     # X is the list of 'fit_transformed' vectors
     X = vectorizer.fit_transform(sparse_matrix)
+    # for datapoint in X:
+    #     print max(datapoint)
     # print X
     # TODO: Return encoded data and labels
     if not as_generator:
@@ -69,9 +71,9 @@ def train_model():
     y = y[y.columns[3]]
     print 'this should be y', y
     # print X[:1000]
-    split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
+    split = ShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
     t_1 = time.clock()
-    estimator = DTR()
+    estimator = DTR(max_features=0.09, random_state=21, max_depth=3)
     estimator2 = RFR()
     estimator3 = RFR(n_estimators=40, n_jobs=-1, random_state=21)
 
@@ -79,7 +81,7 @@ def train_model():
 
     estimator5 = SVR(kernel='poly')
 
-    estimator6 = SGDR(learning_rate='optimal', n_iter=12)
+    estimator6 = ABR(n_estimators=3, random_state=21)
 
     estimator7 = EN()
 
@@ -159,8 +161,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (Stock SVR, 2k samples)"
-    plot_learning_curve(estimator6, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
+    title = "Learning Curves (DecisionTreeRegressor, 0.09 features, max depth 3, 2k samples 0.15 test)"
+    plot_learning_curve(estimator, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
