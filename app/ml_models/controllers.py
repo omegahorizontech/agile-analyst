@@ -8,6 +8,7 @@ from sklearn.ensemble import ExtraTreesRegressor as ETR
 from sklearn.svm import SVR
 from sklearn.ensemble import AdaBoostRegressor as ABR
 from sklearn.linear_model import ElasticNet as EN
+from sklearn.multioutput import MultiOutputRegressor as MOR
 
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
@@ -68,8 +69,8 @@ def prepare_data(as_generator=False):
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
-    y = y[y.columns[3]]
-    print 'this should be y', y
+    # y = y[y.columns[3]]
+    # print 'this should be y', y
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
     t_1 = time.clock()
@@ -84,6 +85,8 @@ def train_model():
     estimator6 = ABR(n_estimators=3, random_state=21)
 
     estimator7 = EN()
+    # MOR multioutput regression!
+    estimator8 = MOR(estimator5, n_jobs=-1)
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -162,7 +165,7 @@ def train_model():
     # plt.show()
 
     title = "Learning Curves (DecisionTreeRegressor, 0.09 features, max depth 3, 2k samples 0.15 test)"
-    plot_learning_curve(estimator, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
+    plot_learning_curve(estimator8, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
