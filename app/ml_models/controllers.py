@@ -72,9 +72,9 @@ def train_model():
     # y = y[y.columns[3]]
     # print 'this should be y', y
     # print X[:1000]
-    split = ShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
+    split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=0.09, random_state=21, max_depth=3)
+    estimator = DTR(max_features=0.33, random_state=21, max_depth=9)
     estimator2 = RFR()
     estimator3 = RFR(n_estimators=40, n_jobs=-1, random_state=21)
 
@@ -85,8 +85,8 @@ def train_model():
     estimator6 = ABR(n_estimators=3, random_state=21)
 
     estimator7 = EN()
-    # MOR multioutput regression!
-    estimator8 = MOR(estimator5, n_jobs=-1)
+    # MOR multioutput regression! The issues with this not showing up might be that a deep copy isn't being made...
+    estimator8 = MOR(estimator, n_jobs=-1)
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -164,8 +164,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DecisionTreeRegressor, 0.09 features, max depth 3, 2k samples 0.15 test)"
-    plot_learning_curve(estimator8, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=-1)
+    title = "Learning Curves (DTR+MOR, 0.33 features, max depth 9, 3k samples)"
+    plot_learning_curve(estimator8, title, X[:3000], y[:3000], (0.1, 1.01), cv=split)
     plt.show()
 
     t_2 = time.clock()
