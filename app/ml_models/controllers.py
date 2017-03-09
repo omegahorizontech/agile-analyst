@@ -9,6 +9,8 @@ from sklearn.svm import SVR
 from sklearn.ensemble import AdaBoostRegressor as ABR
 from sklearn.linear_model import ElasticNet as EN
 from sklearn.multioutput import MultiOutputRegressor as MOR
+from sklearn.neural_network import MLPRegressor as MLPR
+
 
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
@@ -74,19 +76,18 @@ def train_model():
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=0.33, random_state=21, max_depth=9)
+    estimator = DTR(max_features=0.33, max_depth=12)
     estimator2 = RFR()
-    estimator3 = RFR(n_estimators=40, n_jobs=-1, random_state=21)
+    estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
     estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
 
     estimator5 = SVR(kernel='poly')
 
     estimator6 = ABR(n_estimators=3, random_state=21)
-
-    estimator7 = EN()
-    # MOR multioutput regression! The issues with this not showing up might be that a deep copy isn't being made...
-    estimator8 = MOR(estimator, n_jobs=-1)
+    estimator7 = MLPR(activation='identity',verbose=True)
+    # MOR multioutput regression!
+    estimator8 = MOR(estimator7, n_jobs=-1)
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -156,7 +157,7 @@ def train_model():
                  label="Training score")
         plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
                  label="Cross-validation score")
-
+        print test_scores_mean
         plt.legend(loc="best")
         return plt
 
@@ -164,8 +165,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DTR+MOR, 0.33 features, max depth 9, 3k samples)"
-    plot_learning_curve(estimator8, title, X[:3000], y[:3000], (0.1, 1.01), cv=split)
+    title = "Learning Curves (DTR+MOR, 0.33 features, max depth 9, 1k samples)"
+    plot_learning_curve(estimator8, title, X[:1000], y[:1000], (0.1, 1.01), cv=split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
