@@ -71,8 +71,10 @@ def prepare_data(as_generator=False):
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
-    # y = y[y.columns[3]]
-    # print 'this should be y', y
+    # y = y[y.columns[30:90]]
+    y = y[y.columns[3]]
+
+    print 'this should be y', y
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
     t_1 = time.clock()
@@ -85,7 +87,8 @@ def train_model():
     estimator5 = SVR(kernel='poly')
 
     estimator6 = ABR(n_estimators=3, random_state=21)
-    estimator7 = MLPR(activation='identity',verbose=True)
+    # Investigate parameters and relation to null output
+    estimator7 = MLPR(activation='relu', solver='sgd', max_iter=900, verbose=True, early_stopping=True, hidden_layer_sizes=(90), tol=1e-9)
     # MOR multioutput regression!
     estimator8 = MOR(estimator7, n_jobs=-1)
 
@@ -165,8 +168,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DTR+MOR, 0.33 features, max depth 9, 1k samples)"
-    plot_learning_curve(estimator8, title, X[:1000], y[:1000], (0.1, 1.01), cv=split, n_jobs=-1)
+    title = "Learning Curves (MLPR+MOR, [1] 1k samples)"
+    plot_learning_curve(estimator7, title, X[:4000], y[:4000], (0.1, 1.01), cv=split, n_jobs=-1)
     plt.show()
 
     t_2 = time.clock()
