@@ -39,6 +39,16 @@ def prepare_data(as_generator=False):
     data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
     X = pd.DataFrame(data['sample_doc'])
     y = pd.DataFrame(data[data.columns[1:400]])
+    # print 'before: ',X.shape
+
+    filename2 = 'belles_lettres-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)'
+    data2 = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename2 + '.csv')
+    A = pd.DataFrame(data2['sample_doc'])
+    b = pd.DataFrame(data2[data2.columns[1:400]])
+    # print A, b
+    X = X.append(A, ignore_index=True)
+    y = y.append(b, ignore_index=True)
+    # print 'after: ',X.shape
 
     le = LabelEncoder()
     enc = OneHotEncoder()
@@ -71,15 +81,16 @@ def prepare_data(as_generator=False):
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
+    # print y.shape
     # y = y[y.columns[30:90]]
-    y = y[y.columns[3]]
+    y = y[y.columns[30:36]]
 
     print 'this should be y', y
     # print X[:1000]
-    split = ShuffleSplit(n_splits=1, test_size=0.03, random_state=42)
+    split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=0.33, max_depth=12)
-    estimator2 = RFR()
+    estimator = DTR(max_features=0.99, max_depth=11, random_state=12, splitter='random', min_samples_split=.003, presort=True)
+
     estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
     estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
@@ -88,9 +99,9 @@ def train_model():
 
     estimator6 = ABR(n_estimators=3, random_state=21)
     # Investigate parameters and relation to null output
-    estimator7 = MLPR(activation='relu', solver='sgd', max_iter=900, verbose=True, early_stopping=True, hidden_layer_sizes=(90), tol=1e-9)
+    estimator7 = MLPR(solver='sgd', max_iter=900, verbose=True, early_stopping=True, hidden_layer_sizes=(3,3), tol=1e-9, alpha=1e-9, warm_start=True)
     # MOR multioutput regression!
-    estimator8 = MOR(estimator7, n_jobs=-1)
+    estimator8 = MOR(estimator, n_jobs=-1)
 
     # scorer = CVS(reg, X[:1000], y[:1000], cv=split, pre_dispatch=3)
     # for score in scorer:
@@ -168,8 +179,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (MLPR+MOR, [1] 1k samples)"
-    plot_learning_curve(estimator7, title, X[:4000], y[:4000], (0.1, 1.01), cv=split, n_jobs=-1)
+    title = "Learning Curves (DTR(depth 11, 0.99 features, random splits, min split .003, presort)+MOR, 12k samples, 0.09 test)"
+    plot_learning_curve(estimator8, title, X[:12000], y[:12000], (-0.1, 1.01), n_jobs=-1, cv=split)
     plt.show()
 
     t_2 = time.clock()
