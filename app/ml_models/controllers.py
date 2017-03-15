@@ -89,7 +89,7 @@ def train_model():
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=.999, max_depth=12, random_state=12, splitter='random', min_samples_split=.0012, presort=True)
+    estimator = DTR(max_features=.999, max_depth=10, random_state=12, splitter='random', min_samples_split=.0012, presort=False)
 
     estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
@@ -179,7 +179,7 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DTR(depth 12, 0.999 features, random splits, min split .0012, presort)+MOR, 12k samples, 0.09 test, 3 columns)"
+    title = "Learning Curves (DTR(depth 10, 0.999 features, random splits, min split .0012, no presort)+MOR, 12k samples, 0.09 test, 3 columns)"
     plot_learning_curve(estimator8, title, X[:12000], y[:12000], (-0.1, 1.01), n_jobs=-1, cv=split)
     plt.show()
 
