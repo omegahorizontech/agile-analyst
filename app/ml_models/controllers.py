@@ -46,8 +46,18 @@ def prepare_data(as_generator=False):
     A = pd.DataFrame(data2['sample_doc'])
     b = pd.DataFrame(data2[data2.columns[1:400]])
     # print A, b
+
+
+    filename3 = 'learned-brown-400-1N1S1L2U2L(2017-01-15 20:45:24.877)'
+    data3 = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename3 + '.csv')
+    C = pd.DataFrame(data3['sample_doc'])
+    d = pd.DataFrame(data3[data3.columns[1:400]])
+
+
     X = X.append(A, ignore_index=True)
     y = y.append(b, ignore_index=True)
+    X = X.append(C, ignore_index=True)
+    y = y.append(d, ignore_index=True)
     # print 'after: ',X.shape
 
     le = LabelEncoder()
@@ -89,7 +99,7 @@ def train_model():
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=.999, max_depth=10, random_state=12, splitter='random', min_samples_split=.0012, presort=False)
+    estimator = DTR(max_features=.999, max_depth=12, random_state=12, splitter='random', min_samples_split=.009, presort=False)
 
     estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
@@ -179,8 +189,8 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DTR(depth 10, 0.999 features, random splits, min split .0012, no presort)+MOR, 12k samples, 0.09 test, 3 columns)"
-    plot_learning_curve(estimator8, title, X[:12000], y[:12000], (-0.1, 1.01), n_jobs=-1, cv=split)
+    title = "Learning Curves (DTR(depth 12, 0.999 features, random splits, min split .009, no presort)+MOR, 19.94k samples, 0.09 test, 3 columns)"
+    plot_learning_curve(estimator8, title, X[:19940], y[:19940], (-0.1, 1.01), n_jobs=-1, cv=split)
     plt.show()
 
     t_2 = time.clock()
