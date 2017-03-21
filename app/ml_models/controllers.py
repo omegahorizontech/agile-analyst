@@ -21,6 +21,8 @@ from sklearn.preprocessing import OneHotEncoder
 
 from sklearn.feature_extraction import DictVectorizer
 
+from sklearn.externals import joblib
+
 import pandas as pd
 import numpy as np
 
@@ -108,7 +110,7 @@ def train_model():
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
-    estimator = DTR(max_features=1.0, max_depth=24, random_state=12, splitter='random', min_samples_split=.0003, presort=False)
+    estimator = DTR(max_features=1.0, max_depth=18, random_state=12, splitter='random', min_samples_split=.0006, presort=True)
 
     estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
@@ -198,10 +200,10 @@ def train_model():
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
 
-    title = "Learning Curves (DTR(depth 24, 1.0 features, random splits, min split .0003, no presort)+MOR, 24.5k samples, 0.09 test, 3 columns)"
+    title = "Learning Curves (DTR(depth 18, 1.0 features, random splits, min split .0006, presort)+MOR, 24.5k samples, 0.09 test, 3 columns)"
     plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
     plt.show()
-
+    joblib.dump(estimator8, title+'.pkl')
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
     return 'training model'
