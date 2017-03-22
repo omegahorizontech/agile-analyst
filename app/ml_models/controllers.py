@@ -110,15 +110,11 @@ def train_model():
     # print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
+    # Initialize model parameters
     estimator = DTR(max_features=1.0, max_depth=18, random_state=12, splitter='random', min_samples_split=.0006, presort=True)
-
-    estimator3 = RFR(n_estimators=2, max_features=0.33, n_jobs=-1)
 
     estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
 
-    estimator5 = SVR(kernel='poly')
-
-    estimator6 = ABR(n_estimators=3, random_state=21)
     # Investigate parameters and relation to null output
     estimator7 = MLPR(solver='sgd', max_iter=900, verbose=True, early_stopping=True, hidden_layer_sizes=(3,3), tol=1e-9, alpha=1e-9, warm_start=True)
     # MOR multioutput regression!
@@ -199,10 +195,14 @@ def train_model():
     # title = "Learning Curves (RFR)"
     # plot_learning_curve(estimator2, title, X[:2000], y[:2000], (0.1, 1.01), split, n_jobs=1)
     # plt.show()
-
+    # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
     title = "Learning Curves (DTR(depth 18, 1.0 features, random splits, min split .0006, presort)+MOR, 24.5k samples, 0.09 test, 3 columns)"
-    plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
-    plt.show()
+    # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
+    # plt.show()
+    # TODO: Rework this train_model function to focus on training and saving models
+    # Fit the model to some data
+    estimator8.fit(X,y)
+    # Dump the model to persist it.
     joblib.dump(estimator8, title+'.pkl')
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
@@ -210,4 +210,14 @@ def train_model():
 
 # Measure model performance with CV
 def validate_model():
+    # Retrieve a model from a .pkl file with joblib.load()
+    # Use an unseen dataset to score it
+    # Measuure amount of time for predictions
+    X,y = prepare_data(True)
+    title = 'DTR(depth 18, 1.0 features, random splits, min split .0006, presort)+MOR, 24.5k samples, 0.09 test, 3 columns.pkl'
+    estimator = joblib.load(title)
+    estimator.fit(X,y)
+    joblib.dump(estimator, title)
+    print 'prediction', estimator.predict(X[1])
+    print 'actual', y[1]
     return 'validating model'
