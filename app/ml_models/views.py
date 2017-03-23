@@ -19,3 +19,8 @@ def prep_data():
 def train_model():
     response = controllers.train_model()
     return response
+
+@ml_models.route('/validate')
+def validate_model():
+    response = controllers.validate_model()
+    return response
