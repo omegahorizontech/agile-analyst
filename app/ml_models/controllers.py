@@ -180,17 +180,17 @@ def train_model():
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
     # Initialize model parameters
-    estimator = DTR(max_features=1.0, max_depth=18, random_state=12, splitter='random', min_samples_split=.009, min_samples_leaf=.003, presort=True)
+    estimator = DTR(max_features=0.66, max_depth=12, random_state=12, splitter='best', min_samples_split=.06, min_samples_leaf=.03, presort=True)
 
-    estimator4 = ETR(n_estimators=100, max_features=0.66, random_state=12, n_jobs=-1, bootstrap=True)
+    estimator4 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
 
     # Investigate parameters and relation to null output
     estimator7 = MLPR(solver='sgd', max_iter=900, verbose=True, early_stopping=True, hidden_layer_sizes=(3,3), tol=1e-9, alpha=1e-9, warm_start=True)
     # MOR multioutput regression!
-    estimator8 = MOR(estimator, n_jobs=-1)
+    estimator8 = MOR(estimator4, n_jobs=-1)
 
     # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
-    title = "Learning Curves (DTR(depth 18, 1.0 features, random splits, min split .009, min_samples_leaf=.003, presort)+MOR, 24.5k samples, 3 columns)"
+    title = "Learning Curves (ETR(12 estimators, 0.33 features, bootstrap)+MOR, 24.5k samples, 3 columns)"
     # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
     # plt.show()
     # TODO: Rework this train_model function to focus on training and saving models
@@ -208,7 +208,7 @@ def validate_model():
     _,_,vectorizer = prepare_data(True, True)
 
     # Retrieve a model from a .pkl file with joblib.load()
-    title = '(DTR(depth 18, 1.0 features, random splits, min split .009, presort)+MOR, 24.5k samples, 3 columns).pkl'
+    title = '(DTR(depth 12, 0.66 features, best splits, min split .06, min_samples_leaf=.03, presort)+MOR, 24.5k samples, 3 columns).pkl'
     estimator = joblib.load(title)
 
     # Use an unseen dataset to score it
