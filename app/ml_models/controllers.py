@@ -18,6 +18,7 @@ from sklearn.model_selection import learning_curve
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import StandardScaler
 
 from sklearn.feature_extraction import DictVectorizer
 
@@ -70,7 +71,7 @@ def prepare_data(as_generator=False, text_encoder=False):
     y = y.append(f, ignore_index=True)
 
     # print 'after: ',X.shape
-
+    scaler = StandardScaler(with_mean=False)
     le = LabelEncoder()
     enc = OneHotEncoder()
 
@@ -89,6 +90,7 @@ def prepare_data(as_generator=False, text_encoder=False):
     # X is the list of 'fit_transformed' vectors
     # print sparse_matrix
     X = vectorizer.fit_transform(sparse_matrix)
+    X = scaler.fit_transform(X)
     # for datapoint in X:
     #     print max(datapoint)
     # print X
@@ -97,7 +99,7 @@ def prepare_data(as_generator=False, text_encoder=False):
         return 'data prepared'
     else:
         if text_encoder:
-            return X, y, vectorizer
+            return X, y, vectorizer, scaler
         return X, y
 
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1, train_sizes=np.linspace(.1, 1.0, 5)):
@@ -176,7 +178,7 @@ def train_model():
     y = y[y.columns[30:33]]
 
     # print 'this should be y', y
-    # print X[:1000]
+    print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
     # Initialize model parameters
@@ -185,7 +187,7 @@ def train_model():
     estimator4 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
 
     # Investigate parameters and relation to null output
-    estimator7 = MLPR(solver='sgd', max_iter=900, verbose=False, early_stopping=True, hidden_layer_sizes=(3,3,3), tol=1e-9, alpha=1e-9, warm_start=True)
+    estimator7 = MLPR(activation='identity', learning_rate_init=0.001, solver='adam', max_iter=300, verbose=False, random_state=42, early_stopping=True, hidden_layer_sizes=(1,1), tol=1e-9, alpha=1e-3, warm_start=False)
 
     # MOR multioutput regression!
     estimator8 = MOR(estimator7, n_jobs=-1)
@@ -193,7 +195,7 @@ def train_model():
     # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
     title = "Learning Curves (DTR(10 depth, MAE, 0.24 features, random splits, min_samples_split 0.03, min_samples_leaf .009, presort)+MOR, 24.5k samples, 3 columns)"
 
-    title2 = "Learning Curves (MLPR((3,3,3), sgd, max iter 900, alpha 1e-9, tol 1e-9, warm start round 1)+MOR, 24.5k samples, 3 columns)"
+    title2 = "Learning Curves (MLPR((1,1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns)"
     # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
     # plt.show()
     # TODO: Rework this train_model function to focus on training and saving models
@@ -208,10 +210,10 @@ def train_model():
 # Measure model performance with CV
 def validate_model():
     # The vectorizer we retrieve here must be the same as that used to train the model we're validating.
-    _,_,vectorizer = prepare_data(True, True)
+    _,_,vectorizer,scaler = prepare_data(True, True)
 
     # Retrieve a model from a .pkl file with joblib.load()
-    title = '(MLPR((3,3,3), sgd, max iter 900, alpha 1e-9, tol 1e-9, warm start round 1)+MOR, 24.5k samples, 3 columns).pkl'
+    title = '(MLPR((1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns).pkl'
     estimator = joblib.load(title)
 
     # Use an unseen dataset to score it
@@ -229,6 +231,7 @@ def validate_model():
         sparse_matrix.append(dict(counted_sample))
 
     X = vectorizer.transform(sparse_matrix)
+    X = scaler.transform(X)
 
     # Measure amount of time for predictions
     t_1 = time.clock()
