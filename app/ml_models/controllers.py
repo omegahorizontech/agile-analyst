@@ -72,6 +72,7 @@ def prepare_data(as_generator=False, text_encoder=False):
 
     # print 'after: ',X.shape
     scaler = StandardScaler(with_mean=False)
+    output_scaler = StandardScaler(with_mean=False)
     le = LabelEncoder()
     enc = OneHotEncoder()
 
@@ -91,6 +92,8 @@ def prepare_data(as_generator=False, text_encoder=False):
     # print sparse_matrix
     X = vectorizer.fit_transform(sparse_matrix)
     X = scaler.fit_transform(X)
+    y = output_scaler.fit_transform(y)
+    y = pd.DataFrame(y)
     # for datapoint in X:
     #     print max(datapoint)
     # print X
@@ -99,7 +102,7 @@ def prepare_data(as_generator=False, text_encoder=False):
         return 'data prepared'
     else:
         if text_encoder:
-            return X, y, vectorizer, scaler
+            return X, y, vectorizer, scaler, output_scaler
         return X, y
 
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1, train_sizes=np.linspace(.1, 1.0, 5)):
@@ -182,7 +185,7 @@ def train_model():
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
     # Initialize model parameters
-    estimator = DTR(criterion='mae', max_features=0.24, max_depth=10, random_state=12, splitter='random', min_samples_split=.03, min_samples_leaf=.009, presort=True)
+    estimator = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.054, min_samples_leaf=.027, presort=True)
 
     estimator4 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
 
@@ -190,10 +193,10 @@ def train_model():
     estimator7 = MLPR(activation='identity', learning_rate_init=0.001, solver='adam', max_iter=300, verbose=False, random_state=42, early_stopping=True, hidden_layer_sizes=(1,1), tol=1e-9, alpha=1e-3, warm_start=False)
 
     # MOR multioutput regression!
-    estimator8 = MOR(estimator7, n_jobs=-1)
+    estimator8 = MOR(estimator, n_jobs=-1)
 
     # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
-    title = "Learning Curves (DTR(10 depth, MAE, 0.24 features, random splits, min_samples_split 0.03, min_samples_leaf .009, presort)+MOR, 24.5k samples, 3 columns)"
+    title = "Learning Curves (DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.054, min_samples_leaf .027, presort)+MOR, 24.5k samples, 3 columns)"
 
     title2 = "Learning Curves (MLPR((1,1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns)"
     # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
@@ -202,7 +205,7 @@ def train_model():
     # Fit the model to some data
     estimator8.fit(X[:24500],y[:24500])
     # Dump the model to persist it.
-    joblib.dump(estimator8, title2[16:]+'.pkl')
+    joblib.dump(estimator8, title[16:]+'.pkl')
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
     return 'training model'
@@ -210,17 +213,17 @@ def train_model():
 # Measure model performance with CV
 def validate_model():
     # The vectorizer we retrieve here must be the same as that used to train the model we're validating.
-    _,_,vectorizer,scaler = prepare_data(True, True)
+    _,_,vectorizer,scaler,output_scaler = prepare_data(True, True)
 
     # Retrieve a model from a .pkl file with joblib.load()
-    title = '(MLPR((1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns).pkl'
+    title = '(DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.027, min_samples_leaf .018, presort)+MOR, 24.5k samples, 3 columns).pkl'
     estimator = joblib.load(title)
 
     # Use an unseen dataset to score it
     filename = 'science_fiction-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)'
     data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
     X = pd.DataFrame(data['sample_doc'])
-    y = pd.DataFrame(data[data.columns[30:33]])
+    y = pd.DataFrame(data[data.columns[1:400]])
     X_array = np.ravel(X)
     sparse_matrix = []
 
@@ -232,7 +235,9 @@ def validate_model():
 
     X = vectorizer.transform(sparse_matrix)
     X = scaler.transform(X)
-
+    y = output_scaler.transform(y)
+    y = pd.DataFrame(y)
+    y = y[y.columns[30:33]]
     # Measure amount of time for predictions
     t_1 = time.clock()
     score = estimator.score(X,y)
