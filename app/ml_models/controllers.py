@@ -50,18 +50,33 @@ def prepare_data(as_generator=False, text_encoder=False):
     b = pd.DataFrame(data2[data2.columns[1:400]])
     # print A, b
 
-
     filename3 = 'learned-brown-400-1N1S1L2U2L(2017-01-15 20:45:24.877)'
     data3 = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename3 + '.csv')
     C = pd.DataFrame(data3['sample_doc'])
     d = pd.DataFrame(data3[data3.columns[1:400]])
 
-
-
     filename4 = 'news-brown-400-1N1S1L2U2L(2017-01-14 17:57:42.849)'
     data4 = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename4 + '.csv')
     E = pd.DataFrame(data4['sample_doc'])
     f = pd.DataFrame(data4[data4.columns[1:400]])
+
+    filenames = []
+    filenames.append('10-19-20s_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    filenames.append('10-19-30s_705posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    filenames.append('10-19-40s_686posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    filenames.append('10-19-adults_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    filenames.append('editorial-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)')
+    filenames.append('milton-paradise-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
+    filenames.append('shakespeare-macbeth-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
+
+    for filename in filenames:
+        data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
+        Input = pd.DataFrame(data['sample_doc'])
+        Output = pd.DataFrame(data[data.columns[1:400]])
+        X = X.append(Input, ignore_index=True)
+        y = y.append(Output, ignore_index=True)
+
+
 
     X = X.append(A, ignore_index=True)
     y = y.append(b, ignore_index=True)
@@ -91,9 +106,9 @@ def prepare_data(as_generator=False, text_encoder=False):
     # X is the list of 'fit_transformed' vectors
     # print sparse_matrix
     X = vectorizer.fit_transform(sparse_matrix)
-    X = scaler.fit_transform(X)
-    y = output_scaler.fit_transform(y)
-    y = pd.DataFrame(y)
+    # X = scaler.fit_transform(X)
+    # y = output_scaler.fit_transform(y)
+    # y = pd.DataFrame(y)
     # for datapoint in X:
     #     print max(datapoint)
     # print X
@@ -176,7 +191,7 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1, tr
 # Train a classifier on the data and labels
 def train_model():
     X,y = prepare_data(True)
-    # print y.shape
+    print y.shape
     # y = y[y.columns[30:90]]
     y = y[y.columns[30:33]]
 
@@ -203,9 +218,9 @@ def train_model():
     # plt.show()
     # TODO: Rework this train_model function to focus on training and saving models
     # Fit the model to some data
-    estimator8.fit(X[:24500],y[:24500])
+    # estimator8.fit(X[:24500],y[:24500])
     # Dump the model to persist it.
-    joblib.dump(estimator8, title[16:]+'.pkl')
+    # joblib.dump(estimator8, title[16:]+'.pkl')
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
     return 'training model'
