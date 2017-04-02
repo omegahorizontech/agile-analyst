@@ -10,7 +10,7 @@ from sklearn.ensemble import AdaBoostRegressor as ABR
 from sklearn.linear_model import ElasticNet as EN
 from sklearn.multioutput import MultiOutputRegressor as MOR
 from sklearn.neural_network import MLPRegressor as MLPR
-
+from sklearn.pipeline import Pipeline
 
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score as CVS
@@ -86,8 +86,8 @@ def prepare_data(as_generator=False, text_encoder=False):
     y = y.append(f, ignore_index=True)
 
     # print 'after: ',X.shape
-    scaler = StandardScaler(with_mean=False)
-    output_scaler = StandardScaler(with_mean=False)
+    # scaler = StandardScaler(with_mean=False)
+    # output_scaler = StandardScaler(with_mean=False)
     le = LabelEncoder()
     enc = OneHotEncoder()
 
@@ -194,13 +194,13 @@ def train_model():
     print y.shape
     # y = y[y.columns[30:90]]
     y = y[y.columns[30:33]]
-
+    scaler = StandardScaler(with_mean=False)
     # print 'this should be y', y
     print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
     # Initialize model parameters
-    estimator = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.054, min_samples_leaf=.027, presort=True)
+    estimator = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.06, min_samples_leaf=.03, presort=True)
 
     estimator4 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
 
@@ -218,9 +218,11 @@ def train_model():
     # plt.show()
     # TODO: Rework this train_model function to focus on training and saving models
     # Fit the model to some data
+    pipeline = Pipeline([('scaler',scaler), ('estimator',estimator8)])
+    pipeline.fit(X,y)
     # estimator8.fit(X[:24500],y[:24500])
     # Dump the model to persist it.
-    # joblib.dump(estimator8, title[16:]+'.pkl')
+    joblib.dump(pipeline, title[16:]+'.pkl')
     t_2 = time.clock()
     print "Total time: ", t_2-t_1
     return 'training model'
