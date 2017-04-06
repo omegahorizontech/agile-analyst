@@ -58,13 +58,13 @@ def prepare_data(as_generator=False, text_encoder=False):
     f = pd.DataFrame(data4[data4.columns[1:400]])
 
     filenames = []
-    filenames.append('10-19-20s_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    filenames.append('10-19-30s_705posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    filenames.append('10-19-40s_686posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    filenames.append('10-19-adults_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    filenames.append('editorial-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)')
-    filenames.append('milton-paradise-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
-    filenames.append('shakespeare-macbeth-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
+    # filenames.append('10-19-20s_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    # filenames.append('10-19-30s_705posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    # filenames.append('10-19-40s_686posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    # filenames.append('10-19-adults_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    # filenames.append('editorial-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)')
+    # filenames.append('milton-paradise-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
+    # filenames.append('shakespeare-macbeth-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
 
     for filename in filenames:
         data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
@@ -83,8 +83,8 @@ def prepare_data(as_generator=False, text_encoder=False):
     y = y.append(f, ignore_index=True)
 
     # print 'after: ',X.shape
-    # scaler = StandardScaler(with_mean=False)
-    # output_scaler = StandardScaler(with_mean=False)
+    scaler = StandardScaler(with_mean=False)
+    output_scaler = StandardScaler(with_mean=False)
     le = LabelEncoder()
     enc = OneHotEncoder()
 
@@ -196,6 +196,8 @@ def train_model():
     print X[:1000]
     split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
     t_1 = time.clock()
+    for train, test in split.split():
+
     # Initialize model parameters
     estimator1 = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.06, min_samples_leaf=.03, presort=True)
 
