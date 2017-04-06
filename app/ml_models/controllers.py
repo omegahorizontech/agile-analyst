@@ -9,7 +9,7 @@ from sklearn.neural_network import MLPRegressor as MLPR
 from sklearn.multioutput import MultiOutputRegressor as MOR
 from sklearn.pipeline import Pipeline
 
-from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score as CVS
 from sklearn.model_selection import learning_curve
 
@@ -61,10 +61,10 @@ def prepare_data(as_generator=False, text_encoder=False):
     # filenames.append('10-19-20s_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
     # filenames.append('10-19-30s_705posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
     # filenames.append('10-19-40s_686posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    # filenames.append('10-19-adults_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
-    # filenames.append('editorial-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)')
+    filenames.append('10-19-adults_706posts-400-1N1S1L2U2L(2017-01-11 20:56:06.286)')
+    filenames.append('editorial-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)')
     # filenames.append('milton-paradise-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
-    # filenames.append('shakespeare-macbeth-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
+    filenames.append('shakespeare-macbeth-400-1N1S1L2U2L(2017-01-09 16:08:02.377)')
 
     for filename in filenames:
         data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
@@ -103,9 +103,9 @@ def prepare_data(as_generator=False, text_encoder=False):
     # X is the list of 'fit_transformed' vectors
     # print sparse_matrix
     X = vectorizer.fit_transform(sparse_matrix)
-    # X = scaler.fit_transform(X)
-    # y = output_scaler.fit_transform(y)
-    # y = pd.DataFrame(y)
+    X = scaler.fit_transform(X)
+    y = output_scaler.fit_transform(y)
+    y = pd.DataFrame(y)
     # for datapoint in X:
     #     print max(datapoint)
     # print X
@@ -194,12 +194,12 @@ def train_model():
     y = y[y.columns[30:33]]
     # print 'this should be y', y
     print X[:1000]
-    split = ShuffleSplit(n_splits=1, test_size=0.09, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.06, random_state=42)
     t_1 = time.clock()
-    for train, test in split.split():
+
 
     # Initialize model parameters
-    estimator1 = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.06, min_samples_leaf=.03, presort=True)
+    estimator1 = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.003, min_samples_leaf=.0009, presort=True)
 
     estimator2 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
 
@@ -210,17 +210,20 @@ def train_model():
     estimator = MOR(estimator1, n_jobs=-1)
 
     # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
-    title = "Learning Curves (DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.054, min_samples_leaf .027, presort)+MOR, 24.5k samples, 3 columns)"
+    title = "Learning Curves (DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.003, min_samples_leaf .0009, presort)+MOR, 30k samples, 3 columns)"
 
     title2 = "Learning Curves (MLPR((1,1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns)"
     # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
     # plt.show()
     # TODO: Rework this train_model function to focus on training and saving models
     # Fit the model to some data
-    # estimator.fit(X,y)
-    # Dump the model to persist it.
-    # joblib.dump(estimator, title[16:]+'.pkl')
+    estimator.fit(X_train,y_train)
     t_2 = time.clock()
+    t_3 = time.clock()
+    print "Score: ", estimator.score(X_test,y_test)
+    print "Prediction time: ", time.clock()-t_3
+    # Dump the model to persist it.
+    joblib.dump(estimator, title[16:]+'.pkl')
     print "Total time: ", t_2-t_1
     return 'training model'
 
