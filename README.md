@@ -110,3 +110,14 @@ Running a single processor core:
 
 # License
 MIT
+
+## Future Paths
+### Feature Words Only
+  #### ML Approach
+  This strategy would use only those words relevant to scoring a passage. Using 'wild' passages that have been scored, and only those words which matter for its score, a ML model would be trained. Our inputs would be relevant words only, meaning only true features would be regarded as features. The data would need to be given to the system in a form that has only true features and scores. The system would use these true features to formulate a model capable of accurately estimating and reproducing the scores assigned.
+
+  #### AI Approach
+  This strategy would use clever algorithms and data structures (hash tables, ordered dictionaries, etc.) to fully encode relevant words from the original R-emotion corpora. Whereas the conventional approach taken by speedy affect scorer has a complexity near O(nmc), where 'n' is the number of input words, 'm' is the average number of words in a corpus, and 'c' is the number of corpora, this approach would have a compute complexity closer to O(n), the amount of time would only scale with the inputs, since lookups and scoring would essentially be constant complexity with the hash tables and ordered dictionaries. The key challenge would be to balance the hash algorithms and dictionary sizes to accommodate just enough words without having hash crashes.
+  
+### Horizontal Feature Segmentation
+  Another strategy would be to segment the full feature space. Feature segments of ~10k words each would be given to distinct models for regression learning. Each of these models would be responsible for only a portion of the final score for a given estimation, and some method would be used to combine their predictions together to get the final score. This feature segmentation modeling could be used in tandem with multioutput regression, leading to groups of several models for each output. The main challenge here would be mediating the complexity of many models working in tandem, and finding a way to consistently reduce error in what are known to be obligate suboptimal predictors, given their usage of only a portion of the feature space. This would be similar in practice to an ensemble method, but instead of subsequent ensemble members focusing on increasingly difficult predictions, the predictions are of approximately equal difficulty for each sub-model.
