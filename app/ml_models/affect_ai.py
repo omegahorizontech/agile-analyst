@@ -6,7 +6,11 @@ class affect_AI:
         pass
     def train(corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
+        """
+        Inputs: corpora, a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
 
+        Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries. 
+        """
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table
         pass
     def score(sample):
