@@ -6,7 +6,11 @@ class affect_AI:
         pass
     def train(corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
+
+        # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table
         pass
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
+
+        # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
         pass
