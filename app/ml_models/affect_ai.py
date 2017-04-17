@@ -1,7 +1,7 @@
 # TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
 
 class affect_AI:
-    def __init__(vocab_size):
+    def __init__(vocab_size, secondary_dict_size):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
         """
         Params
@@ -9,8 +9,11 @@ class affect_AI:
          vocab_size: int, the total size of the vocabulary to be stored.
 
          secondary_dict_size: int, the maximum number of words to be stored in the second-order dictionaries.
-         
+
         """
+        self.primary_size = vocab_size // secondary_dict_size
+        # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
+        self.dict = {}
         pass
     def train(corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
@@ -24,7 +27,7 @@ class affect_AI:
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
         """
-        Inputs: Str. A string composed of any number of words.
+        Inputs: Str. A string composed of any number of words, sentences, or paragraphs.
 
         Outputs: List. A list of 400 floats, each float corresponding to an r-emotion value score.
         """
