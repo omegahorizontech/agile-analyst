@@ -11,6 +11,8 @@ class affect_AI:
          secondary_dict_size: int, the maximum number of words to be stored in the second-order dictionaries.
 
         """
+        self.vocab_size = vocab_size
+        self.secondary_dict_size = secondary_dict_size
         self.primary_size = vocab_size // secondary_dict_size
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
         self.dict = {}
@@ -24,7 +26,14 @@ class affect_AI:
         """
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table
 
-        # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve. 
+
+        # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
+
+        # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
+
+        # We should start by alphabetizing the words in our corpus
+        # We then find every nth word, where n = secondary dict size
+        # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one. 
         pass
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
