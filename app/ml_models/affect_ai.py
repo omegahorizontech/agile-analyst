@@ -32,8 +32,16 @@ class affect_AI:
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
 
         # We should start by alphabetizing the words in our corpus
-        # We then find every nth word, where n = secondary dict size
-        # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one. 
+
+        # We then find every nth word, where n = secondary dict size. These will serve as the cutoff words for our keys for the primary dictionary.
+
+        # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
+
+        # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
+
+        # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
+
+        # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter. 
         pass
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
