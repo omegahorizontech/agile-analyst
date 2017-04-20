@@ -1,4 +1,5 @@
 # TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
+import sys
 
 class affect_AI:
     def __init__(vocab_size, secondary_dict_size):
@@ -25,6 +26,8 @@ class affect_AI:
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table
+        if corpora.length != self.vocab_size:
+            raise ValueError: print "corpus length does not match initialized vocab size"
 
 
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
@@ -34,14 +37,16 @@ class affect_AI:
         # We should start by alphabetizing the words in our corpus
 
         # We then find every nth word, where n = secondary dict size. These will serve as the cutoff words for our keys for the primary dictionary.
-
+        for i in xrange(0, self.vocab_size, self.secondary_dict_size):
+            # We use an xrange because it's a generator, not a static list.
+            
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
 
         # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
 
-        # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter. 
+        # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
         pass
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
