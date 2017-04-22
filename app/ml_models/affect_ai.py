@@ -37,10 +37,13 @@ class affect_AI:
         # We should start by alphabetizing the words in our corpus
 
         # We then find every nth word, where n = secondary dict size. These will serve as the cutoff words for our keys for the primary dictionary.
+        keys = []
         for i in xrange(0, self.vocab_size, self.secondary_dict_size):
             # We use an xrange because it's a generator, not a static list.
-            
+
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
+        keys = reduce_chars(keys)
+        # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each key's corresponding vocab range. 
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
 
