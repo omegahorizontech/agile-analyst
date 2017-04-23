@@ -43,9 +43,15 @@ class affect_AI:
 
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
         keys = reduce_chars(keys)
-        # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each key's corresponding vocab range. 
+        # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each key's corresponding vocab range.
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
+        for i in xrange(0, self.primary_size):
+            # We need two 'for' loops, one for the primary key we're dealing with, and one for each of the secondary keys we'll be dealing with.
+            current_key = keys[i]
+            self.dict[current_key] = {}
+            for j in xrange(0, self.secondary_dict_size):
+                self.dict[current_key][j]
 
         # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
 
