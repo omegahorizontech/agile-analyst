@@ -21,11 +21,13 @@ class affect_AI:
     def train(corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
         """
+        Uses nested dictionaries to keep lookup times to a minimum. Python dictionaries are implemented with hash tables, and their overhead stays relatively low up to hundreds or thousands of members, so we try to keep each dictionary close to this number of members. Future development directions might include self-adjusting or empirically self-determined dictionary sizes and ratios, where the sizes would all be chosen to maximize lookup time while keeping to minimum complexity.
+
         Inputs: DataFrame. 'corpora' is a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
-        # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table
+        # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
         if corpora.length != self.vocab_size:
             raise ValueError: print "corpus length does not match initialized vocab size"
 
@@ -46,12 +48,15 @@ class affect_AI:
         # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each key's corresponding vocab range.
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
-        for i in xrange(0, self.primary_size):
+        for primary in xrange(0, self.primary_size):
             # We need two 'for' loops, one for the primary key we're dealing with, and one for each of the secondary keys we'll be dealing with.
-            current_key = keys[i]
+            current_key = keys[primary]
             self.dict[current_key] = {}
-            for j in xrange(0, self.secondary_dict_size):
-                self.dict[current_key][j]
+            for secondary in xrange(0, self.secondary_dict_size):
+                # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
+                current_word = corpora[self.secondary_dict_size * primary + secondary]
+                # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers. 
+                self.dict[current_key][current_word['word']] = current_word['corpora']
 
         # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
 
