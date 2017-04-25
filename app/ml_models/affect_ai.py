@@ -55,12 +55,14 @@ class affect_AI:
             for secondary in xrange(0, self.secondary_dict_size):
                 # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
                 current_word = corpora[self.secondary_dict_size * primary + secondary]
-                # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers. 
-                self.dict[current_key][current_word['word']] = current_word['corpora']
+                # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
+                # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
+                symbols = []
+                symbols.append(symbolify(current_word['corpora']))
+                # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
+                self.dict[current_key][current_word['word']] = symbols
 
-        # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
 
-        # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
         pass
     def score(sample):
         # This is where we take a sample and return the 400 r-emotion scores.
