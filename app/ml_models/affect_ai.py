@@ -1,5 +1,7 @@
 # TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
 import sys
+from collections import Counter
+import copy
 
 class affect_AI:
     def __init__(vocab_size, secondary_dict_size):
@@ -40,12 +42,16 @@ class affect_AI:
 
         # We then find every nth word, where n = secondary dict size. These will serve as the cutoff words for our keys for the primary dictionary.
         keys = []
-        for i in xrange(0, self.vocab_size, self.secondary_dict_size):
+        for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
             # We use an xrange because it's a generator, not a static list.
-
+            keys.append[corpora[primary]['word']]
+        # We want to preserve a full list of the keys that's readily accessible
+        keys.sort()
+        self.primary_keys = copy.copy(keys)
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
-        keys = reduce_chars(keys)
         # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each key's corresponding vocab range.
+        # UPDATE: Actually, we don't need to do character reduction on the primary keys, we can use the words themselves as keys, and this will make lookups easier/quicker
+        # keys = reduce_chars(keys)
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
         for primary in xrange(0, self.primary_size):
@@ -58,6 +64,7 @@ class affect_AI:
                 # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
                 # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
                 symbols = []
+                # TODO: Write 'symbolify' method to reduce corpora names and tiers to symbols
                 symbols.append(symbolify(current_word['corpora']))
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
                 self.dict[current_key][current_word['word']] = symbols
@@ -72,4 +79,14 @@ class affect_AI:
         Outputs: List. A list of 400 floats, each float corresponding to an r-emotion value score.
         """
         # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
+        scores = Counter()
+        # TODO: Implement 'wordify' method
+        sample = wordify(sample)
+        for word in sample:
+            # TODO: implement 'find_index' method for returning which primary index a word should be found in
+            primary_index = find_index(word)
+            secondary_dict = self.dict[self.primary_keys[primary_index]]
+            if word in secondary_dict:
+                scores.update(secondary_dict[word])
+                
         pass
