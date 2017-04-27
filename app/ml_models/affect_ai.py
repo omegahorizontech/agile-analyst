@@ -22,6 +22,7 @@ class affect_AI:
         pass
     def train(corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
+        # Dilemma: Do we use 400 columnns (or num columns = num corpora) or do we just have words with lists of the corpora and tiers they're in? The first is larger, but we can use column labels to facilitate some training/scoring functions more easily. The second way saves some memory, but we'd have to build a list of all the unique corpora we've encountered as we take in vocabulary. 
         """
         Uses nested dictionaries to keep lookup times to a minimum. Python dictionaries are implemented with hash tables, and their overhead stays relatively low up to hundreds or thousands of members, so we try to keep each dictionary close to this number of members. Future development directions might include self-adjusting or empirically self-determined dictionary sizes and ratios, where the sizes would all be chosen to maximize lookup time while keeping to minimum complexity.
 
@@ -30,6 +31,7 @@ class affect_AI:
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
+
         if corpora.length != self.vocab_size:
             raise ValueError: print "corpus length does not match initialized vocab size"
 
@@ -88,5 +90,5 @@ class affect_AI:
             secondary_dict = self.dict[self.primary_keys[primary_index]]
             if word in secondary_dict:
                 scores.update(secondary_dict[word])
-                
+
         pass
