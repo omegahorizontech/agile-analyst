@@ -72,7 +72,7 @@ class affect_AI:
                 self.dict[current_key][current_word['word']] = corpora
 
         # TODO: Write 'symbolify' method to reduce corpora names and tiers to symbols.
-        symbolify(self.dict)
+        self.symbolify()
 
         pass
     def score(sample):
@@ -94,3 +94,6 @@ class affect_AI:
                 scores.update(secondary_dict[word])
 
         pass
+
+    def symbolify():
+        # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus. 
