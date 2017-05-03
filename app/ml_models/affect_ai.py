@@ -4,7 +4,7 @@ from collections import Counter
 import copy
 
 class affect_AI:
-    def __init__(vocab_size, secondary_dict_size):
+    def __init__(self, vocab_size, secondary_dict_size):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
         """
         Params
@@ -20,7 +20,7 @@ class affect_AI:
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
         self.dict = {}
         pass
-    def train(corpora):
+    def train(self, corpora):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
         # Dilemma: Do we use 400 columnns (or num columns = num corpora) or do we just have words with lists of the corpora and tiers they're in? The first is larger, but we can use column labels to facilitate some training/scoring functions more easily. The second way saves some memory, but we'd have to build a list of all the unique corpora we've encountered as we take in vocabulary.
         """
@@ -75,7 +75,7 @@ class affect_AI:
         self.symbolify()
 
         pass
-    def score(sample):
+    def score(self, sample):
         # This is where we take a sample and return the 400 r-emotion scores.
         """
         Inputs: Str. A string composed of any number of words, sentences, or paragraphs.
@@ -95,5 +95,10 @@ class affect_AI:
 
         pass
 
-    def symbolify():
-        # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus. 
+    def symbolify(self):
+        # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
+        corpora = self.corpora.keys()
+        symbols = self.reduce_chars(corpora) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
+
+    def reduce_chars(self, list):
+        # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hypthen and its number, like so: ["a-1", "a-2", "ap", "ad"].
