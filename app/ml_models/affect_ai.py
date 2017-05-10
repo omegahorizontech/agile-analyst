@@ -19,17 +19,21 @@ class affect_AI:
         self.primary_size = vocab_size // secondary_dict_size
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
         self.dict = {}
-        pass
-    def train(self, corpora):
+
+    def train(self, corpora, weights):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
         # Dilemma: Do we use 400 columnns (or num columns = num corpora) or do we just have words with lists of the corpora and tiers they're in? The first is larger, but we can use column labels to facilitate some training/scoring functions more easily. The second way saves some memory, but we'd have to build a list of all the unique corpora we've encountered as we take in vocabulary.
         """
         Uses nested dictionaries to keep lookup times to a minimum. Python dictionaries are implemented with hash tables, and their overhead stays relatively low up to hundreds or thousands of members, so we try to keep each dictionary close to this number of members. Future development directions might include self-adjusting or empirically self-determined dictionary sizes and ratios, where the sizes would all be chosen to maximize lookup time while keeping to minimum complexity.
 
-        Inputs: DataFrame. 'corpora' is a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
+        Inputs:
+            --'corpora', DataFrame. 'corpora' is a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
+            --'weights', python dictionary. 'weights' is a dictionary containing scaling coefficients for each tier of each corpus. These coefficients are meant to scale any word found in a tier based on its frequency. Tiers with more words will have smaller coefficients, and tiers with fewer words will have larger coefficients.
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
+        # TODO: Implement 'weights' usage for tracking corpora coefficients.
+        
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
 
         if corpora.length != self.vocab_size:
@@ -51,7 +55,7 @@ class affect_AI:
         keys.sort()
         self.primary_keys = copy.copy(keys)
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
-        # TODO: write 'reduce_chars' helper function to reduce chars to least number required to distinguish each member of a list.
+
         self.corpora = Counter()
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
@@ -74,7 +78,7 @@ class affect_AI:
         # TODO: Write 'symbolify' method to reduce corpora names and tiers to symbols.
         self.symbolify()
 
-        pass
+
     def score(self, sample):
         # This is where we take a sample and return the 400 r-emotion scores.
         """
@@ -93,7 +97,7 @@ class affect_AI:
             if word in secondary_dict:
                 scores.update(secondary_dict[word])
 
-        pass
+
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
@@ -105,7 +109,7 @@ class affect_AI:
                 values = self.dict[primary][secondary]
                 for value in values:
                     value = symbols[value]
-                
+
 
     def reduce_chars(self, verbose):
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
