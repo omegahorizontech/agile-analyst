@@ -32,8 +32,7 @@ class affect_AI:
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
-        # TODO: Implement 'weights' usage for tracking corpora coefficients.
-        
+
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
 
         if corpora.length != self.vocab_size:
@@ -75,8 +74,10 @@ class affect_AI:
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
                 self.dict[current_key][current_word['word']] = corpora
 
-        # TODO: Write 'symbolify' method to reduce corpora names and tiers to symbols.
+
+        self.weights = weights
         self.symbolify()
+
 
 
     def score(self, sample):
@@ -88,6 +89,7 @@ class affect_AI:
         """
         # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
         scores = Counter()
+        r-scores = []
         # TODO: Implement 'wordify' method
         sample = wordify(sample)
         for word in sample:
@@ -97,12 +99,16 @@ class affect_AI:
             if word in secondary_dict:
                 scores.update(secondary_dict[word])
 
-
+        for symbol in scores:
+            # We need to multiply the score for each symbol by its weight for the corpus.
+            score = scores[symbol] * self.weights[symbols[symbols.keys()[symbols.values().index(symbol)]]]
+            # TODO We need a way of preserving the r-emotion corpus order, so the 400 outputs are always in the same order. Perhaps the output should be a dictionary instead.
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
         corpora = self.corpora.keys()
         symbols = self.reduce_chars(corpora) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
+        self.symbols = symbols
         for primary in self.dict.keys():
             for secondary in self.dict[primary].keys():
                 # TODO: Replace the values in each secondary key with the symbol for the corpus
