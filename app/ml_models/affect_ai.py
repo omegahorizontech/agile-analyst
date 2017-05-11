@@ -101,7 +101,7 @@ class affect_AI:
 
         for symbol in scores:
             # We need to multiply the score for each symbol by its weight for the corpus.
-            score = scores[symbol] * self.weights[symbols[symbols.keys()[symbols.values().index(symbol)]]]
+            score = scores[symbol] * self.weights[symbol]
             # TODO We need a way of preserving the r-emotion corpus order, so the 400 outputs are always in the same order. Perhaps the output should be a dictionary instead.
 
     def symbolify(self):
@@ -109,13 +109,16 @@ class affect_AI:
         corpora = self.corpora.keys()
         symbols = self.reduce_chars(corpora) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
         self.symbols = symbols
+        new_weights = {}
+        for corpus in self.weights:
+            new_weights[self.symbols[corpus]] = self.weights[corpus]
         for primary in self.dict.keys():
             for secondary in self.dict[primary].keys():
                 # TODO: Replace the values in each secondary key with the symbol for the corpus
                 values = self.dict[primary][secondary]
                 for value in values:
                     value = symbols[value]
-
+        self.weights = new_weights
 
     def reduce_chars(self, verbose):
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
