@@ -85,11 +85,11 @@ class affect_AI:
         """
         Inputs: Str. A string composed of any number of words, sentences, or paragraphs.
 
-        Outputs: List. A list of 400 floats, each float corresponding to an r-emotion value score.
+        Outputs: Dictionary. A dictionary of 1200 floats, each float corresponding to an r-emotion value score.
         """
         # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
         scores = Counter()
-        r-scores = []
+        r-scores = {}
         # TODO: Implement 'wordify' method
         sample = wordify(sample)
         for word in sample:
@@ -101,8 +101,10 @@ class affect_AI:
 
         for symbol in scores:
             # We need to multiply the score for each symbol by its weight for the corpus.
-            score = scores[symbol] * self.weights[symbol]
+            r-scores[symbol] = scores[symbol] * self.weights[symbol]
             # TODO We need a way of preserving the r-emotion corpus order, so the 400 outputs are always in the same order. Perhaps the output should be a dictionary instead.
+        return r-scores
+
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
