@@ -85,7 +85,7 @@ class affect_AI:
         """
         Inputs: Str. A string composed of any number of words, sentences, or paragraphs.
 
-        Outputs: Dictionary. A dictionary of 1200 floats, each float corresponding to an r-emotion value score.
+        Outputs: Dictionary. A dictionary of r-emotion symbols and 1200 floats, each float corresponding to an r-emotion value score.
         """
         # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
         scores = Counter()

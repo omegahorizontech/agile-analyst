@@ -1,13 +1,12 @@
 import affect_ai
 import pytest
 
-# words: foo, bar, baz, goo, car, caz, hoo, dar, daz, ioo, ear, eaz, loo, far, faz; corpora: happiness 1, satisfaction 2, elation 3
+# words: foo, bar, baz, goo, car, caz, hoo, dar, daz, ioo, ear, eaz, loo, far, faz; corpora: happiness 1, satisfaction 2, elation 2, 3
 
 # Test that an affect_AI object gets created correctly
 def test_creation():
     # We create an affect_ai object with some parameters
     # We make sure those parameters do what they should within the object
-
     pass
 # Test that an affect_AI object can be trained, and builds vocabulary correctly
 def test_training():
