@@ -35,7 +35,7 @@ class affect_AI:
 
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
 
-        if corpora.length != self.vocab_size:
+        if len(corpora) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
 
 
@@ -49,7 +49,7 @@ class affect_AI:
         keys = []
         for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
             # We use an xrange because it's a generator, not a static list.
-            keys.append[corpora[primary]['word']]
+            keys.append(corpora.ix(primary))
         # We want to preserve a full list of the keys that's readily accessible
         keys.sort()
         self.primary_keys = copy.copy(keys)
@@ -68,11 +68,11 @@ class affect_AI:
                 # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
                 # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
                 corpora = []
-                corpora = current_word['corpora']
+                corpora = current_word
                 # We track all of the corpora and tiers we've encountered
                 self.corpora.update(corpora)
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
-                self.dict[current_key][current_word['word']] = corpora
+                self.dict[current_key][current_word] = corpora
 
 
         self.weights = weights
