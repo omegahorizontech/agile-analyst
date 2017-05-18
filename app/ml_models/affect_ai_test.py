@@ -6,10 +6,12 @@ import pandas
 words = ['foo', 'bar', 'baz', 'goo', 'car', 'caz', 'hoo', 'dar', 'daz', 'ioo', 'ear', 'eaz', 'loo', 'far', 'faz']
 corpora = ['happiness 1', 'satisfaction 2', 'elation 2', 'elation 3']
 vocab_dict = {}
+weights = {}
 for word in words:
     vocab_dict[word] = random.choice(corpora)
+    weights[word] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
-print vocab_dict
+print input_frame
 
 ai = affect_ai.affect_AI(15, 5)
 
@@ -24,6 +26,8 @@ def test_creation():
 def test_training():
     # We try to pass in corpora to the affect_ai object we created earlier
     # We make sure its internal objects change as they should
+    ai.train(input_frame, weights)
+    assert len(ai.dict) == 3
     pass
 # Test that an affect_AI object correctly scores samples
 def test_scoring():
