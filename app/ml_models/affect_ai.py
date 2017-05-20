@@ -20,14 +20,14 @@ class affect_AI:
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
         self.dict = {}
 
-    def train(self, corpora, weights):
+    def train(self, vocab, weights):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
         # Dilemma: Do we use 400 columnns (or num columns = num corpora) or do we just have words with lists of the corpora and tiers they're in? The first is larger, but we can use column labels to facilitate some training/scoring functions more easily. The second way saves some memory, but we'd have to build a list of all the unique corpora we've encountered as we take in vocabulary.
         """
         Uses nested dictionaries to keep lookup times to a minimum. Python dictionaries are implemented with hash tables, and their overhead stays relatively low up to hundreds or thousands of members, so we try to keep each dictionary close to this number of members. Future development directions might include self-adjusting or empirically self-determined dictionary sizes and ratios, where the sizes would all be chosen to maximize lookup time while keeping to minimum complexity.
 
         Inputs:
-            --'corpora', DataFrame. 'corpora' is a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
+            --'vocab', DataFrame. 'vocab' is a pandas DataFrame object. Contains a row for each word in the original corpus. First column is the word. Subsequent columns are filled as needed to specify r-emotion corpus and tier each word belongs to.
             --'weights', python dictionary. 'weights' is a dictionary containing scaling coefficients for each tier of each corpus. These coefficients are meant to scale any word found in a tier based on its frequency. Tiers with more words will have smaller coefficients, and tiers with fewer words will have larger coefficients.
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
@@ -35,7 +35,7 @@ class affect_AI:
 
         # We need to articulate each corpus into a fixed number of dictionaries, which in turn will be stored in dictionaries. Dictionaries in python use hash tables for lookup and storage, so this will be our hash table.
 
-        if len(corpora) != self.vocab_size:
+        if len(vocab) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
 
 
@@ -49,7 +49,7 @@ class affect_AI:
         keys = []
         for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
             # We use an xrange because it's a generator, not a static list.
-            keys.append(corpora.ix(primary))
+            keys.append(vocab.iloc[primary][0])
         # We want to preserve a full list of the keys that's readily accessible
         keys.sort()
         self.primary_keys = copy.copy(keys)
@@ -64,15 +64,16 @@ class affect_AI:
             self.dict[current_key] = {}
             for secondary in xrange(0, self.secondary_dict_size):
                 # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
-                current_word = corpora[self.secondary_dict_size * primary + secondary]
+                current_word = vocab.iloc[self.secondary_dict_size * primary + secondary]
+                print current_word
                 # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
                 # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
-                corpora = []
-                corpora = current_word
+                # corpora = []
+                # corpora = current_word
                 # We track all of the corpora and tiers we've encountered
-                self.corpora.update(corpora)
+                self.corpora.update(current_word)
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
-                self.dict[current_key][current_word] = corpora
+                self.dict[current_key][current_word[0]] = current_word[1]
 
 
         self.weights = weights
