@@ -71,7 +71,7 @@ class affect_AI:
                 # corpora = []
                 # corpora = current_word
                 # We track all of the corpora and tiers we've encountered
-                self.corpora.update(current_word)
+                self.corpora.update(current_word[1:])
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
                 self.dict[current_key][current_word[0]] = current_word[1]
 
@@ -110,7 +110,7 @@ class affect_AI:
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
         corpora = self.corpora.keys()
-        symbols = self.reduce_chars(self.corpora) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
+        symbols = self.reduce_chars(self.corpora.keys()) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
         self.symbols = symbols
         new_weights = {}
         for corpus in self.weights:
@@ -127,13 +127,13 @@ class affect_AI:
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
         print verbose
         reduced = {}
-        reduced[verbose[0]] = verbose[0][0]
+        reduced[verbose[0]] = verbose[0][0] + verbose[0].split(" ")[1]
         # Iterate over the words
         for word in range(1,len(verbose)):
             # Use the minimum number of letters to differentiate it from a previous neighbor.
             index = 0
             cur_symbol = verbose[word][index]
-            current_numeral = verbose[word].split(" ")
+            current_numeral = verbose[word].split(" ")[1]
             corpus_and_tier = reduced[verbose[word-1]].split(" ")
             prev_symbol = corpus_and_tier[0]
             while cur_symbol == prev_symbol:
