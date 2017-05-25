@@ -77,6 +77,7 @@ class affect_AI:
 
 
         self.weights = weights
+        print 'this is self.weights:', self.weights
         self.symbolify()
 
 
@@ -113,7 +114,7 @@ class affect_AI:
         symbols = self.reduce_chars(self.corpora.keys()) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
         self.symbols = symbols
         new_weights = {}
-        for corpus in self.weights:
+        for corpus in self.weights.keys():
             new_weights[self.symbols[corpus]] = self.weights[corpus]
         for primary in self.dict.keys():
             for secondary in self.dict[primary].keys():
