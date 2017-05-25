@@ -9,7 +9,9 @@ vocab_dict = {}
 weights = {}
 for word in words:
     vocab_dict[word] = random.choice(corpora)
-    weights[word] = random.random()
+for corpus in corpora:
+
+    weights[corpus] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
 print input_frame
 
