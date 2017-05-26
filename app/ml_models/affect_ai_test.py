@@ -13,7 +13,7 @@ for corpus in corpora:
 
     weights[corpus] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
-print input_frame
+# print input_frame
 
 ai = affect_ai.affect_AI(15, 5)
 
