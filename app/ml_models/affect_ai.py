@@ -77,7 +77,7 @@ class affect_AI:
 
 
         self.weights = weights
-        print 'this is self.weights:', self.weights
+        # print 'this is self.weights:', self.weights
         self.symbolify()
 
 
@@ -120,13 +120,19 @@ class affect_AI:
             for secondary in self.dict[primary].keys():
                 # TODO: Replace the values in each secondary key with the symbol for the corpus
                 values = self.dict[primary][secondary]
-                for value in values:
-                    value = symbols[value]
+                print 'values: ', values, len(values), type(values) == list()
+                if type(values) != list():
+                    values = symbols[values]
+                else:
+                    for value in values:
+                        print 'value in values: ', value, 'symbols:', symbols
+                        value = symbols[value]
+                print 'the other values:', self.dict[primary][secondary]
         self.weights = new_weights
 
     def reduce_chars(self, verbose):
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
-        print verbose
+        # print verbose
         reduced = {}
         reduced[verbose[0]] = verbose[0][0] + verbose[0].split(" ")[1]
         # Iterate over the words
@@ -141,7 +147,7 @@ class affect_AI:
                 index += 1
                 cur_symbol += verbose[word][index]
             # Reassociate any number it had.
-            print cur_symbol, current_numeral
+            # print cur_symbol, current_numeral
             cur_symbol += "-" + current_numeral
             # Store the new symbol in a dictionary with the word it replaces.
             reduced[verbose[word]] = cur_symbol
