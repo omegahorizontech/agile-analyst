@@ -1,7 +1,7 @@
 import affect_ai
 import pytest, random
 import pandas
-
+from collections import Counter
 # words: foo, bar, baz, goo, car, caz, hoo, dar, daz, ioo, ear, eaz, loo, far, faz; corpora: happiness 1, satisfaction 2, elation 2, 3
 words = ['foo', 'bar', 'baz', 'goo', 'car', 'caz', 'hoo', 'dar', 'daz', 'ioo', 'ear', 'eaz', 'loo', 'far', 'faz']
 corpora = ['happiness 1', 'satisfaction 2', 'elation 2', 'elation 3']
@@ -14,6 +14,11 @@ for corpus in corpora:
     weights[corpus] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
 # print input_frame
+sample = str()
+for word in range(len(corpora)):
+    sample += random.choice(words)
+    if word < len(corpora)-1:
+        sample += ' '
 
 ai = affect_ai.affect_AI(15, 5)
 
@@ -30,9 +35,20 @@ def test_training():
     # We make sure its internal objects change as they should
     ai.train(input_frame, weights)
     assert len(ai.dict) == 3
+    assert len(ai.weights) == len(weights)
     pass
 # Test that an affect_AI object correctly scores samples
 def test_scoring():
     # We have the affect_ai score a sample of words containing some of its trained words
     # We compare the scored result to what we know it should be
+    scored_corpora = Counter()
+    final_scores = {}
+    print sample.split(' ')
+    for word in sample.split(' '):
+        scored_corpora.update(vocab_dict[word])
+    for corpus in scored_corpora:
+        final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
+    test_scores = ai.score(sample)
+    for corpus in final_scores:
+        assert final_scores[corpus] == test_scores[corpus]
     pass
