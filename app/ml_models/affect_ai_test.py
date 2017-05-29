@@ -45,8 +45,10 @@ def test_scoring():
     final_scores = {}
     print sample.split(' ')
     for word in sample.split(' '):
-        scored_corpora.update(vocab_dict[word])
+        # print 'this is word: ', word, 'this is the corpus we add:', vocab_dict[word]
+        scored_corpora.update([vocab_dict[word]])
     for corpus in scored_corpora:
+        # print 'this is corpus: ', corpus
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
     test_scores = ai.score(sample)
     for corpus in final_scores:
