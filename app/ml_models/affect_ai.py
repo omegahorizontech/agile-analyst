@@ -92,8 +92,7 @@ class affect_AI:
         # For each word in the sample, we check if it's where it should be in our hash table. If it's there, we add its contribution to the total r-emotion scores for the sample.
         scores = Counter()
         r_scores = {}
-        # TODO: Implement 'wordify' method
-        sample = wordify(sample)
+        sample = self.wordify(sample)
         for word in sample:
             # TODO: implement 'find_index' method for returning which primary index a word should be found in
             primary_index = find_index(word)
@@ -152,3 +151,17 @@ class affect_AI:
             # Store the new symbol in a dictionary with the word it replaces.
             reduced[verbose[word]] = cur_symbol
         return reduced
+
+    def wordify(self, sentence):
+        """ wordify method takes a sentence or paragraph, as a single string, and returns a list of words with letters and numbers only.
+
+        Inputs
+            sentence: string. The string to be transformed into a list of words.
+        Outputs
+            words: list. A list of alphanumeric words, found separated within 'sentence' by spaces.
+
+        """
+        words = sentence.split(" ")
+        words = [str().join(filter(str.isalpha, word)) for word in words]
+        words = [word for word in words if word]
+        return words
