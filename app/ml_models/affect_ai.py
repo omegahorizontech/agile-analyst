@@ -95,8 +95,8 @@ class affect_AI:
         sample = self.wordify(sample)
         for word in sample:
             # TODO: implement 'find_index' method for returning which primary index a word should be found in
-            primary_index = find_index(word)
-            secondary_dict = self.dict[self.primary_keys[primary_index]]
+            primary_index = self.find_index(word)
+            secondary_dict = self.dict[primary_index]
             if word in secondary_dict:
                 scores.update(secondary_dict[word])
 
@@ -165,3 +165,12 @@ class affect_AI:
         words = [str().join(filter(str.isalpha, word)) for word in words]
         words = [word for word in words if word]
         return words
+
+    def find_index(self, query):
+        keys = [key for key in self.dict.keys()]
+        keys.append(query)
+        keys.sort()
+        location = keys.index(query)
+        index_word = keys[location-1]
+        # print index_word
+        return index_word
