@@ -94,13 +94,14 @@ class affect_AI:
         r_scores = {}
         sample = self.wordify(sample)
         for word in sample:
-            # TODO: implement 'find_index' method for returning which primary index a word should be found in
             primary_index = self.find_index(word)
             secondary_dict = self.dict[primary_index]
+            print 'this is secondary_dict:',secondary_dict
             if word in secondary_dict:
-                scores.update(secondary_dict[word])
+                scores.update([secondary_dict[word]])
 
         for symbol in scores:
+            print 'this is symbol:',symbol,'this is scores:',scores
             # We need to multiply the score for each symbol by its weight for the corpus.
             r_scores[symbol] = scores[symbol] * self.weights[symbol]
             # TODO We need a way of preserving the r-emotion corpus order, so the 400 outputs are always in the same order. Perhaps the output should be a dictionary instead.
