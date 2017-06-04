@@ -52,5 +52,9 @@ def test_scoring():
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
     test_scores = ai.score(sample)
     for corpus in final_scores:
-        assert final_scores[corpus] == test_scores[corpus]
+        corpus_parts = corpus.split(' ')
+        corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
+        print final_scores[corpus]
+        print test_scores[corpus_symbol]
+        assert final_scores[corpus] == test_scores[corpus_symbol]
     pass
