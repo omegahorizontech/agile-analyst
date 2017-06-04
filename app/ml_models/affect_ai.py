@@ -123,10 +123,12 @@ class affect_AI:
                 print 'values: ', values, len(values), type(values) == list()
                 if type(values) != list():
                     values = symbols[values]
+                    self.dict[primary][secondary] = values
                 else:
                     for value in values:
                         print 'value in values: ', value, 'symbols:', symbols
                         value = symbols[value]
+                    self.dict[primary][secondary] = values
                 print 'the other values:', self.dict[primary][secondary]
         self.weights = new_weights
 
