@@ -97,6 +97,7 @@ class affect_AI:
             primary_index = self.find_index(word)
             secondary_dict = self.dict[primary_index]
             print 'this is secondary_dict:',secondary_dict
+            print 'this is word in secondary_dict:',word
             if word in secondary_dict:
                 scores.update([secondary_dict[word]])
 
@@ -136,7 +137,7 @@ class affect_AI:
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
         # print verbose
         reduced = {}
-        reduced[verbose[0]] = verbose[0][0] + verbose[0].split(" ")[1]
+        reduced[verbose[0]] = verbose[0][0] + '-' + verbose[0].split(" ")[1]
         # Iterate over the words
         for word in range(1,len(verbose)):
             # Use the minimum number of letters to differentiate it from a previous neighbor.
@@ -170,6 +171,8 @@ class affect_AI:
         return words
 
     def find_index(self, query):
+        if query in self.dict.keys():
+            return query
         keys = [key for key in self.dict.keys()]
         keys.append(query)
         keys.sort()
