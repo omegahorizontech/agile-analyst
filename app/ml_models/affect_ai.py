@@ -1,6 +1,7 @@
 # TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
 import sys
 from collections import Counter
+import pandas as pd
 import copy
 
 class affect_AI:
@@ -38,7 +39,7 @@ class affect_AI:
         if len(vocab) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
 
-
+        vocab.sort_values(by='0')
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
 
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
