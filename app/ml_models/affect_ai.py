@@ -1,6 +1,7 @@
 # TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
 import sys
 from collections import Counter
+import pandas as pd
 import copy
 
 class affect_AI:
@@ -38,7 +39,7 @@ class affect_AI:
         if len(vocab) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
 
-
+        vocab.sort_values(by='0')
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
 
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
@@ -97,6 +98,7 @@ class affect_AI:
             primary_index = self.find_index(word)
             secondary_dict = self.dict[primary_index]
             print 'this is secondary_dict:',secondary_dict
+            print 'this is word in secondary_dict:',word
             if word in secondary_dict:
                 scores.update([secondary_dict[word]])
 
@@ -136,7 +138,7 @@ class affect_AI:
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
         # print verbose
         reduced = {}
-        reduced[verbose[0]] = verbose[0][0] + verbose[0].split(" ")[1]
+        reduced[verbose[0]] = verbose[0][0] + '-' + verbose[0].split(" ")[1]
         # Iterate over the words
         for word in range(1,len(verbose)):
             # Use the minimum number of letters to differentiate it from a previous neighbor.
@@ -170,6 +172,8 @@ class affect_AI:
         return words
 
     def find_index(self, query):
+        if query in self.dict.keys():
+            return query
         keys = [key for key in self.dict.keys()]
         keys.append(query)
         keys.sort()

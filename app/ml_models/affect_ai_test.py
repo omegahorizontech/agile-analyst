@@ -51,6 +51,7 @@ def test_scoring():
         # print 'this is corpus: ', corpus
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
     test_scores = ai.score(sample)
+    print 'this is test_scores:',test_scores
     for corpus in final_scores:
         corpus_parts = corpus.split(' ')
         corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
