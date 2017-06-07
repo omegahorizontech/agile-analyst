@@ -38,8 +38,8 @@ class affect_AI:
 
         if len(vocab) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
-
-        vocab.sort_values(by='0')
+        col = vocab.axes[1][0]
+        vocab.sort_values(by=col)
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
 
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
@@ -53,6 +53,7 @@ class affect_AI:
             keys.append(vocab.iloc[primary][0])
         # We want to preserve a full list of the keys that's readily accessible
         keys.sort()
+        print 'keys in train:',keys
         self.primary_keys = copy.copy(keys)
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
 
@@ -96,6 +97,7 @@ class affect_AI:
         sample = self.wordify(sample)
         for word in sample:
             primary_index = self.find_index(word)
+            print 'primary_index:', primary_index
             secondary_dict = self.dict[primary_index]
             print 'this is secondary_dict:',secondary_dict
             print 'this is word in secondary_dict:',word
@@ -172,9 +174,11 @@ class affect_AI:
         return words
 
     def find_index(self, query):
-        if query in self.dict.keys():
+        keys = self.primary_keys
+        if query in keys:
+            print 'dict keys:', keys
+            print 'dict primary keys:', self.dict.keys()
             return query
-        keys = [key for key in self.dict.keys()]
         keys.append(query)
         keys.sort()
         location = keys.index(query)
