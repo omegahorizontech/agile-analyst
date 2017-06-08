@@ -40,6 +40,8 @@ class affect_AI:
             raise ValueError("corpus length does not match initialized vocab size")
         col = vocab.axes[1][0]
         vocab.sort_values(by=col)
+        print '---vocab:',vocab
+        vocabulary = vocab[col]
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
 
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
@@ -50,10 +52,10 @@ class affect_AI:
         keys = []
         for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
             # We use an xrange because it's a generator, not a static list.
-            keys.append(vocab.iloc[primary][0])
+            keys.append(vocabulary[primary])
         # We want to preserve a full list of the keys that's readily accessible
         keys.sort()
-        print 'keys in train:',keys
+        print '---keys in train:',keys
         self.primary_keys = copy.copy(keys)
         # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
 
@@ -63,19 +65,20 @@ class affect_AI:
         for primary in xrange(0, self.primary_size):
             # We need two 'for' loops, one for the primary key we're dealing with, and one for each of the secondary keys we'll be dealing with.
             current_key = keys[primary]
+            print 'current key in train', current_key
             self.dict[current_key] = {}
             for secondary in xrange(0, self.secondary_dict_size):
                 # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
-                current_word = vocab.iloc[self.secondary_dict_size * primary + secondary]
+                current_word = vocabulary[self.secondary_dict_size * primary + secondary]
                 # print current_word
                 # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
                 # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
                 # corpora = []
                 # corpora = current_word
                 # We track all of the corpora and tiers we've encountered
-                self.corpora.update(current_word[1:])
+                self.corpora.update([current_word[1:]])
                 # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
-                self.dict[current_key][current_word[0]] = current_word[1]
+                self.dict[current_key][current_word] = vocab[current_word][1]
 
 
         self.weights = weights
