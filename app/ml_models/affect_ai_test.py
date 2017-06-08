@@ -43,7 +43,7 @@ def test_scoring():
     # We compare the scored result to what we know it should be
     scored_corpora = Counter()
     final_scores = {}
-    print sample.split(' ')
+    print 'sample.split:',sample.split(' ')
     for word in sample.split(' '):
         # print 'this is word: ', word, 'this is the corpus we add:', vocab_dict[word]
         scored_corpora.update([vocab_dict[word]])
