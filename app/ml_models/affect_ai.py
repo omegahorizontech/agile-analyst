@@ -4,6 +4,8 @@ from collections import Counter
 import pandas as pd
 import copy
 
+# New direction: store vocab words in a single dictionary. Keep track of corpora. At the end, when all corpora have been tallied, generate a dictionary where each key is a corpus and each value is a number between 0 and the number of corpora. During scoring, the number value for each word is put into a counter, then converted into a dictionary for final reporting.
+
 class affect_AI:
     def __init__(self, vocab_size, secondary_dict_size):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
@@ -15,11 +17,12 @@ class affect_AI:
          secondary_dict_size: int, the maximum number of words to be stored in the second-order dictionaries.
 
         """
-        self.vocab_size = vocab_size
-        self.secondary_dict_size = secondary_dict_size
-        self.primary_size = vocab_size // secondary_dict_size
+        # self.vocab_size = vocab_size
+        # self.secondary_dict_size = secondary_dict_size
+        # self.primary_size = vocab_size // secondary_dict_size
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
-        self.dict = {}
+        self.vocab = {}
+        self.corpora = {}
 
     def train(self, vocab, weights):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
@@ -38,10 +41,10 @@ class affect_AI:
 
         if len(vocab) != self.vocab_size:
             raise ValueError("corpus length does not match initialized vocab size")
-        col = vocab.axes[1][0]
-        vocab.sort_values(by=col)
+        word_col = vocab.axes[1][0]
+        vocab.sort_values(by=word_col)
         print '---vocab:',vocab
-        vocabulary = vocab[col]
+        # vocabulary = vocab[col]
         # For each future secondary dictionary within our corpora, we need to find a range that will serve as a key in our primary dictionary. This will tell us which secondary dictionary to retrieve.
 
         # Each key in the primary dictionary will represent the range of words present in the secondary dictionary. If a word has a lower alphabetical value than a key, it must belong to the prior key. Thus, we will need to specify sequences to use as keys based on the size of our total corpus and secondary dictionaries. Additionally, we will need to consider the unique distribution of words and the letters they begin with in our corpus.
@@ -49,42 +52,48 @@ class affect_AI:
         # We should start by alphabetizing the words in our corpus
 
         # We then find every nth word, where n = secondary dict size. These will serve as the cutoff words for our keys for the primary dictionary.
-        keys = []
-        for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
-            # We use an xrange because it's a generator, not a static list.
-            keys.append(vocabulary[primary])
-        # We want to preserve a full list of the keys that's readily accessible
-        keys.sort()
-        print '---keys in train:',keys
-        self.primary_keys = copy.copy(keys)
-        # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
-
-        self.corpora = Counter()
+        # keys = []
+        # for primary in xrange(0, self.vocab_size, self.secondary_dict_size):
+        #     # We use an xrange because it's a generator, not a static list.
+        #     keys.append(vocab.iloc[primary][word_col])
+        # # We want to preserve a full list of the keys that's readily accessible
+        # keys.sort()
+        # print '---keys in train:',keys
+        # self.primary_keys = copy.copy(keys)
+        # # We use the first m letters of each word such that we have the minimum number required to distinguish one key from its neighbor. eg, 'making' has the key neighbor 'masking', so assuming we're constrained into using 'mak' for the first one by its earlier neighbor, we only need to use 'mas' for the second one.
+        #
+        # self.corpora = Counter()
 
         # Now that we have keys for the primary dictionary, we can create each of the secondary dictionaries.
-        for primary in xrange(0, self.primary_size):
-            # We need two 'for' loops, one for the primary key we're dealing with, and one for each of the secondary keys we'll be dealing with.
-            current_key = keys[primary]
-            print 'current key in train', current_key
-            self.dict[current_key] = {}
-            for secondary in xrange(0, self.secondary_dict_size):
-                # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
-                current_word = vocabulary[self.secondary_dict_size * primary + secondary]
-                # print current_word
-                # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
-                # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
-                # corpora = []
-                # corpora = current_word
-                # We track all of the corpora and tiers we've encountered
-                self.corpora.update([current_word[1:]])
-                # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
-                self.dict[current_key][current_word] = vocab[current_word][1]
-
-
-        self.weights = weights
-        # print 'this is self.weights:', self.weights
+        # for primary in xrange(0, self.primary_size):
+        #     # We need two 'for' loops, one for the primary key we're dealing with, and one for each of the secondary keys we'll be dealing with.
+        #     current_key = keys[primary]
+        #     print 'current key in train', current_key
+        #     self.dict[current_key] = {}
+        #     for secondary in xrange(0, self.secondary_dict_size):
+        #         # We need to get the right index from the corpora, processing each word as part of a block of secondary dictionary words for each primary key.
+        #         current_word = vocab.iloc[self.secondary_dict_size * primary + secondary][word_col]
+        #         # print current_word
+        #         # Each key in our secondary dictionaries will be a word, beginning with the word which partly served as a key in the primary dictionary.
+        #         # The secondary key will be the word from the corpus, and the value there will be a list of symbols corresponding to the corpus names and tiers.
+        #         # corpora = []
+        #         # corpora = current_word
+        #         # We track all of the corpora and tiers we've encountered
+        #         self.corpora.update([current_word[1:]])
+        #         # In each secondary dictionary, each key (word in our corpus) will have the corpora its found in and its tier stored as a list of symbols (eg, 'Ag-1', 'Cl-2', etc.). This will make scoring a simple matter of looking up a word in our dictionaries, tracking the count of each symbol, and then calculating the score for each affect category at the end by applying our scoring coefficients to the symbol counter.
+        #         self.dict[current_key][current_word] = vocab[current_word][1]
+        #
+        #
+        # self.weights = weights
+        # # print 'this is self.weights:', self.weights
+        # self.symbolify()
+        corp_num = 0
+        for row in range(vocab.shape[0]):
+            self.vocab[vocab.iloc[row][0]] = self.vocab[vocab.iloc[row][1]]
+        for value in Counter(self.vocab.values()):
+            self.corpora[value] = corp_num
+            corp_num += 1
         self.symbolify()
-
 
 
     def score(self, sample):
@@ -117,27 +126,36 @@ class affect_AI:
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
-        corpora = self.corpora.keys()
-        symbols = self.reduce_chars(self.corpora.keys()) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
-        self.symbols = symbols
-        new_weights = {}
-        for corpus in self.weights.keys():
-            new_weights[self.symbols[corpus]] = self.weights[corpus]
-        for primary in self.dict.keys():
-            for secondary in self.dict[primary].keys():
-                # TODO: Replace the values in each secondary key with the symbol for the corpus
-                values = self.dict[primary][secondary]
-                print 'values: ', values, len(values), type(values) == list()
-                if type(values) != list():
-                    values = symbols[values]
-                    self.dict[primary][secondary] = values
-                else:
-                    for value in values:
-                        print 'value in values: ', value, 'symbols:', symbols
-                        value = symbols[value]
-                    self.dict[primary][secondary] = values
-                print 'the other values:', self.dict[primary][secondary]
-        self.weights = new_weights
+        # corpora = self.corpora.keys()
+        # symbols = self.reduce_chars(self.corpora.keys()) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
+        # self.symbols = symbols
+        # new_weights = {}
+        # for corpus in self.weights.keys():
+        #     new_weights[self.symbols[corpus]] = self.weights[corpus]
+        # for primary in self.dict.keys():
+        #     for secondary in self.dict[primary].keys():
+        #         # TODO: Replace the values in each secondary key with the symbol for the corpus
+        #         values = self.dict[primary][secondary]
+        #         print 'values: ', values, len(values), type(values) == list()
+        #         if type(values) != list():
+        #             values = symbols[values]
+        #             self.dict[primary][secondary] = values
+        #         else:
+        #             for value in values:
+        #                 print 'value in values: ', value, 'symbols:', symbols
+        #                 value = symbols[value]
+        #             self.dict[primary][secondary] = values
+        #         print 'the other values:', self.dict[primary][secondary]
+        # self.weights = new_weights
+        for word in self.vocab:
+            corp = self.vocab[word]
+            if type(corp) == list():
+                new_corpora = []
+                for corpus in corp:
+                    new_corpora.append(self.corpora[corpus])
+                self.vocab[word] = new_corpora
+            else:
+                self.vocab[word] = self.corpora[corp]
 
     def reduce_chars(self, verbose):
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
