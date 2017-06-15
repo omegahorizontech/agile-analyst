@@ -108,13 +108,13 @@ class affect_AI:
         r_scores = {}
         sample = self.wordify(sample)
         for word in sample:
-            primary_index = self.find_index(word)
-            print 'primary_index:', primary_index
-            secondary_dict = self.dict[primary_index]
-            print 'this is secondary_dict:',secondary_dict
-            print 'this is word in secondary_dict:',word
-            if word in secondary_dict:
-                scores.update([secondary_dict[word]])
+            # primary_index = self.find_index(word)
+            # print 'primary_index:', primary_index
+            # secondary_dict = self.dict[primary_index]
+            # print 'this is secondary_dict:',secondary_dict
+            # print 'this is word in secondary_dict:',word
+            if word in self.vocab:
+                scores.update([self.vocab[word]])
 
         for symbol in scores:
             print 'this is symbol:',symbol,'this is scores:',scores
@@ -156,6 +156,9 @@ class affect_AI:
                 self.vocab[word] = new_corpora
             else:
                 self.vocab[word] = self.corpora[corp]
+        for corpus in self.weights.keys():
+            new_weights[self.symbols[corpus]] = self.weights[corpus]
+        self.weights = new_weights
 
     def reduce_chars(self, verbose):
         # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
