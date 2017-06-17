@@ -1,4 +1,3 @@
-# TODO: Implement methods for the affective AI based on hash tables. We need to initialize the storage and mgmt mechanisms, train it, and score samples with it.
 import sys
 from collections import Counter
 import pandas as pd
@@ -23,6 +22,7 @@ class affect_AI:
         # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
         self.vocab = {}
         self.corpora = {}
+        self.weights = {}
 
     def train(self, vocab, weights):
         # This is where we actually 'learn' the vocabulary and its r-emotion scores.
@@ -83,27 +83,7 @@ class affect_AI:
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
-        # corpora = self.corpora.keys()
-        # symbols = self.reduce_chars(self.corpora.keys()) # This needs to be a dictionary, where keys are the original corpus and values are the corresponding symbols.
-        # self.symbols = symbols
-        # new_weights = {}
-        # for corpus in self.weights.keys():
-        #     new_weights[self.symbols[corpus]] = self.weights[corpus]
-        # for primary in self.dict.keys():
-        #     for secondary in self.dict[primary].keys():
-        #         # TODO: Replace the values in each secondary key with the symbol for the corpus
-        #         values = self.dict[primary][secondary]
-        #         print 'values: ', values, len(values), type(values) == list()
-        #         if type(values) != list():
-        #             values = symbols[values]
-        #             self.dict[primary][secondary] = values
-        #         else:
-        #             for value in values:
-        #                 print 'value in values: ', value, 'symbols:', symbols
-        #                 value = symbols[value]
-        #             self.dict[primary][secondary] = values
-        #         print 'the other values:', self.dict[primary][secondary]
-        # self.weights = new_weights
+
         for word in self.vocab:
             corp = self.vocab[word]
             if type(corp) == list():
