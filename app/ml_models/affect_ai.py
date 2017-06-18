@@ -6,7 +6,7 @@ import copy
 # New direction: store vocab words in a single dictionary. Keep track of corpora. At the end, when all corpora have been tallied, generate a dictionary where each key is a corpus and each value is a number between 0 and the number of corpora. During scoring, the number value for each word is put into a counter, then converted into a dictionary for final reporting.
 
 class affect_AI:
-    def __init__(self, vocab_size, secondary_dict_size):
+    def __init__(self):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
         """
         Params
@@ -97,28 +97,28 @@ class affect_AI:
             new_weights[self.symbols[corpus]] = self.weights[corpus]
         self.weights = new_weights
 
-    def reduce_chars(self, verbose):
-        # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
-        # print verbose
-        reduced = {}
-        reduced[verbose[0]] = verbose[0][0] + '-' + verbose[0].split(" ")[1]
-        # Iterate over the words
-        for word in range(1,len(verbose)):
-            # Use the minimum number of letters to differentiate it from a previous neighbor.
-            index = 0
-            cur_symbol = verbose[word][index]
-            current_numeral = verbose[word].split(" ")[1]
-            corpus_and_tier = reduced[verbose[word-1]].split(" ")
-            prev_symbol = corpus_and_tier[0]
-            while cur_symbol == prev_symbol:
-                index += 1
-                cur_symbol += verbose[word][index]
-            # Reassociate any number it had.
-            # print cur_symbol, current_numeral
-            cur_symbol += "-" + current_numeral
-            # Store the new symbol in a dictionary with the word it replaces.
-            reduced[verbose[word]] = cur_symbol
-        return reduced
+    # def reduce_chars(self, verbose):
+    #     # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
+    #     # print verbose
+    #     reduced = {}
+    #     reduced[verbose[0]] = verbose[0][0] + '-' + verbose[0].split(" ")[1]
+    #     # Iterate over the words
+    #     for word in range(1,len(verbose)):
+    #         # Use the minimum number of letters to differentiate it from a previous neighbor.
+    #         index = 0
+    #         cur_symbol = verbose[word][index]
+    #         current_numeral = verbose[word].split(" ")[1]
+    #         corpus_and_tier = reduced[verbose[word-1]].split(" ")
+    #         prev_symbol = corpus_and_tier[0]
+    #         while cur_symbol == prev_symbol:
+    #             index += 1
+    #             cur_symbol += verbose[word][index]
+    #         # Reassociate any number it had.
+    #         # print cur_symbol, current_numeral
+    #         cur_symbol += "-" + current_numeral
+    #         # Store the new symbol in a dictionary with the word it replaces.
+    #         reduced[verbose[word]] = cur_symbol
+    #     return reduced
 
     def wordify(self, sentence):
         """ wordify method takes a sentence or paragraph, as a single string, and returns a list of words with letters and numbers only.

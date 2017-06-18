@@ -20,7 +20,7 @@ for word in range(len(corpora)):
     if word < len(corpora)-1:
         sample += ' '
 
-ai = affect_ai.affect_AI(15, 5)
+ai = affect_ai.affect_AI()
 
 # Test that an affect_AI object gets created correctly
 def test_creation():
