@@ -43,6 +43,7 @@ def test_training():
 def test_scoring():
     # We have the affect_ai score a sample of words containing some of its trained words
     # We compare the scored result to what we know it should be
+    ai.train(input_frame, weights)
     scored_corpora = Counter()
     final_scores = {}
     print 'sample.split:',sample.split(' ')
@@ -52,6 +53,7 @@ def test_scoring():
     for corpus in scored_corpora:
         # print 'this is corpus: ', corpus
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
+
     test_scores = ai.score(sample)
     print 'this is test_scores:',test_scores
     for corpus in final_scores:

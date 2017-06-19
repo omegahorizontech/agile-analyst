@@ -36,8 +36,8 @@ class affect_AI:
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
-        if len(vocab) != self.vocab_size:
-            raise ValueError("corpus length does not match initialized vocab size")
+        # if len(vocab) != self.vocab_size:
+        #     raise ValueError("corpus length does not match initialized vocab size")
         word_col = vocab.axes[1][0]
         vocab.sort_values(by=word_col)
         print '---vocab:',vocab
@@ -134,15 +134,15 @@ class affect_AI:
         words = [word for word in words if word]
         return words
 
-    def find_index(self, query):
-        keys = self.primary_keys
-        if query in keys:
-            print 'dict keys:', keys
-            print 'dict primary keys:', self.dict.keys()
-            return query
-        keys.append(query)
-        keys.sort()
-        location = keys.index(query)
-        index_word = keys[location-1]
-        # print index_word
-        return index_word
+    # def find_index(self, query):
+    #     keys = self.primary_keys
+    #     if query in keys:
+    #         print 'dict keys:', keys
+    #         print 'dict primary keys:', self.dict.keys()
+    #         return query
+    #     keys.append(query)
+    #     keys.sort()
+    #     location = keys.index(query)
+    #     index_word = keys[location-1]
+    #     # print index_word
+    #     return index_word
