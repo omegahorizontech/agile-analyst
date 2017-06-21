@@ -83,7 +83,6 @@ class affect_AI:
 
     def symbolify(self):
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
-
         for word in self.vocab:
             corp = self.vocab[word]
             if type(corp) == list():
@@ -93,8 +92,9 @@ class affect_AI:
                 self.vocab[word] = new_corpora
             else:
                 self.vocab[word] = self.corpora[corp]
+        new_weights = {}
         for corpus in self.weights.keys():
-            new_weights[self.symbols[corpus]] = self.weights[corpus]
+            new_weights[self.corpora[corpus]] = self.weights[corpus]
         self.weights = new_weights
 
     # def reduce_chars(self, verbose):
