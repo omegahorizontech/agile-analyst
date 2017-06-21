@@ -56,10 +56,10 @@ def test_scoring():
 
     test_scores = ai.score(sample)
     print 'this is test_scores:',test_scores
-    for corpus in final_scores:
-        corpus_parts = corpus.split(' ')
-        corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
-        print final_scores[corpus]
-        print test_scores[corpus_symbol]
-        assert final_scores[corpus] == test_scores[corpus_symbol]
+    for corpus in test_scores:
+        # corpus_parts = corpus.split(' ')
+        # corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
+        print final_scores[ai.corpora[corpus]]
+        print test_scores[corpus]
+        assert final_scores[ai.corpora[corpus]] == test_scores[corpus]
     pass
