@@ -28,15 +28,15 @@ def test_creation():
     # We make sure those parameters do what they should within the object
     # assert ai.vocab_size == 15
     # assert ai.primary_size == 3
-    assert ai.vocab
-    assert ai.corpora
+    assert ai.vocab == {}
+    assert ai.corpora == {}
     pass
 # Test that an affect_AI object can be trained, and builds vocabulary correctly
 def test_training():
     # We try to pass in corpora to the affect_ai object we created earlier
     # We make sure its internal objects change as they should
     ai.train(input_frame, weights)
-    assert len(ai.dict) == 3
+    assert len(ai.vocab) == len(words)
     assert len(ai.weights) == len(weights)
     pass
 # Test that an affect_AI object correctly scores samples
@@ -59,7 +59,9 @@ def test_scoring():
     for corpus in test_scores:
         # corpus_parts = corpus.split(' ')
         # corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
-        print final_scores[ai.corpora[corpus]]
+        print 'corpus in test_scores'
+        score_key = ai.corpora.keys()[ai.corpora.values().index(corpus)]
+        print final_scores[score_key]
         print test_scores[corpus]
-        assert final_scores[ai.corpora[corpus]] == test_scores[corpus]
+        assert final_scores[score_key] == test_scores[corpus]
     pass
