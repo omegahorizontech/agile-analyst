@@ -1,22 +1,35 @@
 import affect_ai
 import pytest, random
-import pandas
+import pandas, string
 from collections import Counter
 # words: foo, bar, baz, goo, car, caz, hoo, dar, daz, ioo, ear, eaz, loo, far, faz; corpora: happiness 1, satisfaction 2, elation 2, 3
+lotsa_words = []
+for word in range(1000):
+    new_word = ''
+    for j in range(3):
+        new_word += random.choice(string.letters)
+    if new_word in lotsa_words:
+        not_good = True
+        while not_good:
+            new_word = ''
+            for j in range(3):
+                new_word += random.choice(string.letters)
+            if new_word not in lotsa_words:
+                not_good = False
+    lotsa_words.append(new_word)
 words = ['foo', 'bar', 'baz', 'goo', 'car', 'caz', 'hoo', 'dar', 'daz', 'ioo', 'ear', 'eaz', 'loo', 'far', 'faz']
 corpora = ['happiness 1', 'satisfaction 2', 'elation 2', 'elation 3']
 vocab_dict = {}
 weights = {}
-for word in words:
+for word in lotsa_words:
     vocab_dict[word] = random.choice(corpora)
 for corpus in corpora:
-
     weights[corpus] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
 # print input_frame
 sample = str()
 for word in range(len(corpora)):
-    sample += random.choice(words)
+    sample += random.choice(lotsa_words)
     if word < len(corpora)-1:
         sample += ' '
 
@@ -36,7 +49,7 @@ def test_training():
     # We try to pass in corpora to the affect_ai object we created earlier
     # We make sure its internal objects change as they should
     ai.train(input_frame, weights)
-    assert len(ai.vocab) == len(words)
+    assert len(ai.vocab) == len(lotsa_words)
     assert len(ai.weights) == len(weights)
     pass
 # Test that an affect_AI object correctly scores samples
