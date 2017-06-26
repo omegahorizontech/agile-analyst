@@ -40,7 +40,7 @@ class affect_AI:
         #     raise ValueError("corpus length does not match initialized vocab size")
         word_col = vocab.axes[1][0]
         vocab.sort_values(by=word_col)
-        print '---vocab:',vocab
+        # print '---vocab:',vocab
         # vocabulary = vocab[col]
 
         corp_num = 0
@@ -74,7 +74,7 @@ class affect_AI:
                 scores.update([self.vocab[word]])
 
         for symbol in scores:
-            print 'this is symbol:',symbol,'this is scores:',scores
+            # print 'this is symbol:',symbol,'this is scores:',scores
             # We need to multiply the score for each symbol by its weight for the corpus.
             r_scores[symbol] = scores[symbol] * self.weights[symbol]
 
