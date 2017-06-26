@@ -1,5 +1,5 @@
 # agile-analyst
-A natural language processing (NLP) project which makes use of machine learning to understand affect.
+A natural language processing (NLP) project which makes use of artificial intelligence, dynamic programming, and machine learning to understand affect.
 
 # Getting Started
 * First, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html(https://virtualenv.pypa.io/en/latest/installation.html)
