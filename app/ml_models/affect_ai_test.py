@@ -37,7 +37,7 @@ for word in range(len(corpora)):
 sample_2 = str()
 for word in range(len(corpora)*1000000):
     sample_2 += random.choice(lotsa_words)
-    if word < len(corpora)-1:
+    if word < (len(corpora)*1000000)-1:
         sample_2 += ' '
 
 ai = affect_ai.affect_AI()
