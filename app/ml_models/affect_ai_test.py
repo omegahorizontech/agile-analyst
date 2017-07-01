@@ -75,15 +75,15 @@ def test_scoring():
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
 
     test_scores = ai.score(sample)
-    # print 'this is test_scores:',test_scores
+    print 'this is test_scores:',test_scores
     for corpus in test_scores:
         # corpus_parts = corpus.split(' ')
         # corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
         # print 'corpus in test_scores'
-        score_key = ai.corpora.keys()[ai.corpora.values().index(corpus)]
+        # score_key = ai.corpora.keys()[ai.corpora.values().index(corpus)]
         # print final_scores[score_key]
         # print test_scores[corpus]
-        assert final_scores[score_key] == test_scores[corpus]
+        assert final_scores[corpus] == test_scores[corpus]
 
 def test_compute():
     ratio = float(len(sample_2)) / len(sample)
