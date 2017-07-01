@@ -76,7 +76,8 @@ class affect_AI:
         for symbol in scores:
             # print 'this is symbol:',symbol,'this is scores:',scores
             # We need to multiply the score for each symbol by its weight for the corpus.
-            r_scores[symbol] = scores[symbol] * self.weights[symbol]
+            symbol_name = self.corpora.keys()[self.corpora.values().index(symbol)]
+            r_scores[symbol_name] = scores[symbol] * self.weights[symbol]
 
         return r_scores
 
