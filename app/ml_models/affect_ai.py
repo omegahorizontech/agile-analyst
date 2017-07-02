@@ -16,12 +16,12 @@ class affect_AI:
          secondary_dict_size: int, the maximum number of words to be stored in the second-order dictionaries.
 
         """
-        # self.vocab_size = vocab_size
-        # self.secondary_dict_size = secondary_dict_size
-        # self.primary_size = vocab_size // secondary_dict_size
-        # The keys in our primary dictionary should correspond to ranges within our corpora, so those will need to be set in 'train'
+
+        # vocab is all the words the ai has affective associations for.
         self.vocab = {}
+        # corpora maps each corpus found during training to an integer symbol. The symbol is then used internally.
         self.corpora = {}
+        # weights tells us how to scale a 'hit' for each corpus, to scale and normalize somewhat for varying corpus sizes and word frequencies across all corpora.
         self.weights = {}
 
     def train(self, vocab, weights):
@@ -36,12 +36,10 @@ class affect_AI:
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
-        # if len(vocab) != self.vocab_size:
-        #     raise ValueError("corpus length does not match initialized vocab size")
+
         word_col = vocab.axes[1][0]
         vocab.sort_values(by=word_col)
-        # print '---vocab:',vocab
-        # vocabulary = vocab[col]
+
 
         corp_num = 0
         for row in range(vocab.shape[0]):
@@ -65,16 +63,12 @@ class affect_AI:
         r_scores = {}
         sample = self.wordify(sample)
         for word in sample:
-            # primary_index = self.find_index(word)
-            # print 'primary_index:', primary_index
-            # secondary_dict = self.dict[primary_index]
-            # print 'this is secondary_dict:',secondary_dict
-            # print 'this is word in secondary_dict:',word
+            # If we find a word from the sample in the vocab, then we should actually look it up.
+            # TODO: Use a list comprehension to lookup only those words in the vocab.
             if word in self.vocab:
                 scores.update([self.vocab[word]])
 
         for symbol in scores:
-            # print 'this is symbol:',symbol,'this is scores:',scores
             # We need to multiply the score for each symbol by its weight for the corpus.
             symbol_name = self.corpora.keys()[self.corpora.values().index(symbol)]
             r_scores[symbol_name] = scores[symbol] * self.weights[symbol]
@@ -86,40 +80,22 @@ class affect_AI:
         # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
         for word in self.vocab:
             corp = self.vocab[word]
+            # If we have a list of corpus names for a word's membership, we have multiple symbols to replace.
             if type(corp) == list():
                 new_corpora = []
                 for corpus in corp:
+                    # do the symbol replacement
                     new_corpora.append(self.corpora[corpus])
                 self.vocab[word] = new_corpora
             else:
+                # Do just single symbol replacement.
                 self.vocab[word] = self.corpora[corp]
         new_weights = {}
+        # Now, we need to replace the corpus names in 'weights' with their matching symbol.
         for corpus in self.weights.keys():
             new_weights[self.corpora[corpus]] = self.weights[corpus]
         self.weights = new_weights
 
-    # def reduce_chars(self, verbose):
-    #     # This method takes a list of strings and returns a dictionary. The returned dictionary's keys are each of the original words and its values are a reduced version of the word. The reduction is based on keeping the minimum number of characters required to differentiate it from its preceding neighbor. ["apple", "apply", "adequate"] would therefore be returned as ["a", "ap", "ad"]. If the word contains a hyphen or space followed by a number, like ["apple-1", "apple 2" "apply", "adequate"] the word is returned in reduced form followed by a hyphen and its number, like so: ["a-1", "a-2", "ap", "ad"].
-    #     # print verbose
-    #     reduced = {}
-    #     reduced[verbose[0]] = verbose[0][0] + '-' + verbose[0].split(" ")[1]
-    #     # Iterate over the words
-    #     for word in range(1,len(verbose)):
-    #         # Use the minimum number of letters to differentiate it from a previous neighbor.
-    #         index = 0
-    #         cur_symbol = verbose[word][index]
-    #         current_numeral = verbose[word].split(" ")[1]
-    #         corpus_and_tier = reduced[verbose[word-1]].split(" ")
-    #         prev_symbol = corpus_and_tier[0]
-    #         while cur_symbol == prev_symbol:
-    #             index += 1
-    #             cur_symbol += verbose[word][index]
-    #         # Reassociate any number it had.
-    #         # print cur_symbol, current_numeral
-    #         cur_symbol += "-" + current_numeral
-    #         # Store the new symbol in a dictionary with the word it replaces.
-    #         reduced[verbose[word]] = cur_symbol
-    #     return reduced
 
     def wordify(self, sentence):
         """ wordify method takes a sentence or paragraph, as a single string, and returns a list of words with letters and numbers only.
