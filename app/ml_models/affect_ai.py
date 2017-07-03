@@ -36,17 +36,19 @@ class affect_AI:
 
         Outputs: None. Stores as an internal object (an attribute on 'self') an ordered dictionary of ordered dictionaries containing our words as keys in the second order dictionaries and the corpora and tiers it's part of as values in the second order dictionaries.
         """
-
+        # Refer to the column that contains words, sort by words.
         word_col = vocab.axes[1][0]
         vocab.sort_values(by=word_col)
 
-
+        # Keep track of how many unique corpora we've seen, to help us assign each one a unique symbol.
         corp_num = 0
+        # Take in each word, add all observed corpora and vocab to internal dictionaries.
         for row in range(vocab.shape[0]):
             self.vocab[vocab.iloc[row][0]] = vocab.iloc[row][1]
         for value in Counter(self.vocab.values()):
             self.corpora[value] = corp_num
             corp_num += 1
+        # Store the weights, and then turn stored corpora and keys for weights into symbols.
         self.weights = weights
         self.symbolify()
 
@@ -106,20 +108,10 @@ class affect_AI:
             words: list. A list of alphanumeric words, found separated within 'sentence' by spaces.
 
         """
+        # Split the sentence by spaces into words
         words = sentence.split(" ")
+        # Make sure each word is in fact just letters and numbers
         words = [str().join(filter(str.isalpha, word)) for word in words]
+        # Return just a list of words
         words = [word for word in words if word]
         return words
-
-    # def find_index(self, query):
-    #     keys = self.primary_keys
-    #     if query in keys:
-    #         print 'dict keys:', keys
-    #         print 'dict primary keys:', self.dict.keys()
-    #         return query
-    #     keys.append(query)
-    #     keys.sort()
-    #     location = keys.index(query)
-    #     index_word = keys[location-1]
-    #     # print index_word
-    #     return index_word
