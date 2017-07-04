@@ -1,6 +1,7 @@
 from flask import jsonify
 import requests, operator, math, json, csv, os
 import matplotlib.pyplot as plt
+import affect_ai
 
 from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.ensemble import RandomForestRegressor as RFR
@@ -187,45 +188,52 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1, tr
 # Do a shufflesplit or other cross-validation
 # Train a classifier on the data and labels
 def train_model():
-    X,y = prepare_data(True)
-    print y.shape
-    print X.shape
-    # y = y[y.columns[30:90]]
-    y = y[y.columns[30:33]]
-    # print 'this should be y', y
-    print X[:1000]
-    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.06, random_state=42)
-    t_1 = time.clock()
+    # X,y = prepare_data(True)
+    # print y.shape
+    # print X.shape
+    # # y = y[y.columns[30:90]]
+    # y = y[y.columns[30:33]]
+    # # print 'this should be y', y
+    # print X[:1000]
+    # X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.06, random_state=42)
+    # t_1 = time.clock()
+    #
+    #
+    # # Initialize model parameters
+    # estimator1 = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.003, min_samples_leaf=.0009, presort=True)
+    #
+    # estimator2 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
+    #
+    # # Investigate parameters and relation to null output
+    # estimator3 = MLPR(activation='identity', learning_rate_init=0.001, solver='adam', max_iter=300, verbose=False, random_state=42, early_stopping=True, hidden_layer_sizes=(1,1), tol=1e-9, alpha=1e-3, warm_start=False)
+    #
+    # # MOR multioutput regression!
+    # estimator = MOR(estimator1, n_jobs=-1)
+    #
+    # # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
+    # title = "Learning Curves (DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.003, min_samples_leaf .0009, presort)+MOR, 30k samples, 3 columns)"
+    #
+    # title2 = "Learning Curves (MLPR((1,1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns)"
+    # # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
+    # # plt.show()
+    # # TODO: Rework this train_model function to focus on training and saving models
+    # # Fit the model to some data
+    # estimator.fit(X_train,y_train)
+    # t_2 = time.clock()
+    # t_3 = time.clock()
+    # print "Score: ", estimator.score(X_test,y_test)
+    # print "Prediction time: ", time.clock()-t_3
+    # # Dump the model to persist it.
+    # joblib.dump(estimator, title[16:]+'.pkl')
+    # print "Total time: ", t_2-t_1
+    # return 'training model'
 
+    # TODO: Use real corpus data to train the affect_ai.
+    affect_vocab = {}
+    affect_weights = {}
 
-    # Initialize model parameters
-    estimator1 = DTR(criterion='mse', max_features=0.24, max_depth=9, random_state=12, splitter='random', min_samples_split=.003, min_samples_leaf=.0009, presort=True)
-
-    estimator2 = ETR(n_estimators=12, max_features=0.33, random_state=12, n_jobs=-1, bootstrap=True)
-
-    # Investigate parameters and relation to null output
-    estimator3 = MLPR(activation='identity', learning_rate_init=0.001, solver='adam', max_iter=300, verbose=False, random_state=42, early_stopping=True, hidden_layer_sizes=(1,1), tol=1e-9, alpha=1e-3, warm_start=False)
-
-    # MOR multioutput regression!
-    estimator = MOR(estimator1, n_jobs=-1)
-
-    # Optional: Run plot_learning_curve to generate learning curves for models. Relocate this code elsewhere to improve readability.
-    title = "Learning Curves (DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.003, min_samples_leaf .0009, presort)+MOR, 30k samples, 3 columns)"
-
-    title2 = "Learning Curves (MLPR((1,1), identity, init learning rate 0.001, adam, max iter 300, alpha 1e-3, tol 1e-9, no warm start)+MOR, 24.5k samples, 3 columns)"
-    # plot_learning_curve(estimator8, title, X[:24500], y[:24500], (-0.1, 1.01), n_jobs=-1, cv=split)
-    # plt.show()
-    # TODO: Rework this train_model function to focus on training and saving models
-    # Fit the model to some data
-    estimator.fit(X_train,y_train)
-    t_2 = time.clock()
-    t_3 = time.clock()
-    print "Score: ", estimator.score(X_test,y_test)
-    print "Prediction time: ", time.clock()-t_3
-    # Dump the model to persist it.
-    joblib.dump(estimator, title[16:]+'.pkl')
-    print "Total time: ", t_2-t_1
-    return 'training model'
+    aff_ai = affect_ai.affect_AI()
+    aff_ai.train(affect_vocab, affect_weights)
 
 # Measure model performance with CV
 def validate_model():
