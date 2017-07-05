@@ -46,8 +46,6 @@ ai = affect_ai.affect_AI()
 def test_creation():
     # We create an affect_ai object with some parameters
     # We make sure those parameters do what they should within the object
-    # assert ai.vocab_size == 15
-    # assert ai.primary_size == 3
     assert ai.vocab == {}
     assert ai.corpora == {}
 
@@ -86,6 +84,7 @@ def test_scoring():
         assert final_scores[corpus] == test_scores[corpus]
 
 def test_compute():
+    # Assess the compute time performance of the affect_ai class
     ratio = float(len(sample_2)) / len(sample)
     t1 = time.clock()
     test_scores = ai.score(sample)
@@ -93,5 +92,4 @@ def test_compute():
     test_scores_2 = ai.score(sample_2)
     t3 = time.clock()
     logging.info('longer time: ' + str(t3-t2) + 'for ' + str(len(sample_2)) + ' samples')
-
     assert (t3-t2) < (ratio*(t2-t1))
