@@ -83,40 +83,42 @@ def prepare_data(as_generator=False, text_encoder=False):
     X = X.append(E, ignore_index=True)
     y = y.append(f, ignore_index=True)
 
-    # print 'after: ',X.shape
-    scaler = StandardScaler(with_mean=False)
-    output_scaler = StandardScaler(with_mean=False)
-    le = LabelEncoder()
-    enc = OneHotEncoder()
+    # We should just return words in a sample and the scores for that sample. We'll have to deal with parsing the scores and comparing them to what our affect_ai.score() method outputs later.
+    return X, y
 
-    X_array = np.ravel(X)
-
-    # Initialize DictVectorizer and an empty sparse_matrix to store vectors
-    vectorizer = DictVectorizer(sparse=False)
-    sparse_matrix = []
-    # Find unique words, use them as encoding labels
-    for sample in X_array:
-        words = sample.split(' ')
-        counted_sample = Counter()
-        counted_sample.update(words)
-        sparse_matrix.append(dict(counted_sample))
-
-    # X is the list of 'fit_transformed' vectors
-    # print sparse_matrix
-    X = vectorizer.fit_transform(sparse_matrix)
-    X = scaler.fit_transform(X)
-    y = output_scaler.fit_transform(y)
-    y = pd.DataFrame(y)
-    # for datapoint in X:
-    #     print max(datapoint)
-    # print X
-    # TODO: Return encoded data and labels
-    if not as_generator:
-        return 'data prepared'
-    else:
-        if text_encoder:
-            return X, y, vectorizer, scaler, output_scaler
-        return X, y
+    # # print 'after: ',X.shape
+    # scaler = StandardScaler(with_mean=False)
+    # output_scaler = StandardScaler(with_mean=False)
+    # le = LabelEncoder()
+    # enc = OneHotEncoder()
+    #
+    # X_array = np.ravel(X)
+    #
+    # # Initialize DictVectorizer and an empty sparse_matrix to store vectors
+    # vectorizer = DictVectorizer(sparse=False)
+    # sparse_matrix = []
+    # # Find unique words, use them as encoding labels
+    # for sample in X_array:
+    #     words = sample.split(' ')
+    #     counted_sample = Counter()
+    #     counted_sample.update(words)
+    #     sparse_matrix.append(dict(counted_sample))
+    #
+    # # X is the list of 'fit_transformed' vectors
+    # # print sparse_matrix
+    # X = vectorizer.fit_transform(sparse_matrix)
+    # X = scaler.fit_transform(X)
+    # y = output_scaler.fit_transform(y)
+    # y = pd.DataFrame(y)
+    # # for datapoint in X:
+    # #     print max(datapoint)
+    # # print X
+    # if not as_generator:
+    #     return 'data prepared'
+    # else:
+    #     if text_encoder:
+    #         return X, y, vectorizer, scaler, output_scaler
+    #     return X, y
 
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1, train_sizes=np.linspace(.1, 1.0, 5)):
     """
@@ -237,4 +239,5 @@ def validate_model():
     # #     print 'predicted', predictions[prediction], 'actual', y.iloc[prediction]
 
     # Use data scored by ample affect to gauge accuracy of data scored by affect_ai.
+    # We will need to go through and compare each of the 400 corpus scores returned by affect_ai as individual tiers to what ample affect itself produced. 
     return 'validating model'
