@@ -239,5 +239,10 @@ def validate_model():
     # #     print 'predicted', predictions[prediction], 'actual', y.iloc[prediction]
 
     # Use data scored by ample affect to gauge accuracy of data scored by affect_ai.
-    # We will need to go through and compare each of the 400 corpus scores returned by affect_ai as individual tiers to what ample affect itself produced. 
+    # We will need to go through and compare each of the 400 corpus scores returned by affect_ai as individual tiers to what ample affect itself produced.
+
+    # For each test sample
+    # For each column corresponding to a corpus score
+    # Sum up the three tiers in the dictionary of predictions
+    # Compare the sum to the ground truth value from ample affect scorer.
     return 'validating model'
