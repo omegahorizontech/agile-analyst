@@ -194,11 +194,11 @@ def train_model():
     # TODO: Use real corpus data to train the affect_ai.
     affect_vocab = {}
     affect_weights = {}
-    title = 'affect_ai.pkl'
+    title = 'affect_ai_v1-0-0.pkl'
 
     aff_ai = affect_ai.affect_AI()
     aff_ai.train(affect_vocab, affect_weights)
-    joblib.dump(estimator, title)
+    joblib.dump(aff_ai, title)
 
 # Measure model performance with CV
 def validate_model():
@@ -207,7 +207,8 @@ def validate_model():
     #
     # # Retrieve a model from a .pkl file with joblib.load()
     # # title = '(DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.027, min_samples_leaf .018, presort)+MOR, 24.5k samples, 3 columns).pkl'
-    # estimator = joblib.load(title)
+    title = 'affect_ai_v1-0-0.pkl'
+    aff_ai = joblib.load(title)
     #
     # # Use an unseen dataset to score it
     # filename = 'science_fiction-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)'
