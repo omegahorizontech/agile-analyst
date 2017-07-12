@@ -5,6 +5,7 @@ from collections import Counter
 logging.basicConfig(format='%(levelname)s:%(message)s',level=logging.DEBUG)
 # words: foo, bar, baz, goo, car, caz, hoo, dar, daz, ioo, ear, eaz, loo, far, faz; corpora: happiness 1, satisfaction 2, elation 2, 3
 lotsa_words = []
+# Build a list of 1k random words for testing.
 for word in range(1000):
     new_word = ''
     for j in range(3):
