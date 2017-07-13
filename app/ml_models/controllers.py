@@ -202,33 +202,13 @@ def train_model():
 
 # Measure model performance with CV
 def validate_model():
-    # # The vectorizer we retrieve here must be the same as that used to train the model we're validating.
-    # _,_,vectorizer,scaler,output_scaler = prepare_data(True, True)
-    #
+
     # # Retrieve a model from a .pkl file with joblib.load()
-    # # title = '(DTR(9 depth, MSE, 0.24 features, random splits, min_samples_split 0.027, min_samples_leaf .018, presort)+MOR, 24.5k samples, 3 columns).pkl'
     title = 'affect_ai_v1-0-0.pkl'
     aff_ai = joblib.load(title)
     #
     # # Use an unseen dataset to score it
-    # filename = 'science_fiction-brown-400-1N1S1L2U2L(2017-01-17 17:30:39.071)'
-    # data = pd.read_csv(os.path.dirname(__file__) + '/../../data/' + filename + '.csv')
-    # X = pd.DataFrame(data['sample_doc'])
-    # y = pd.DataFrame(data[data.columns[1:400]])
-    # X_array = np.ravel(X)
-    # sparse_matrix = []
-    #
-    # for sample in X_array:
-    #     words = sample.split(' ')
-    #     counted_sample = Counter()
-    #     counted_sample.update(words)
-    #     sparse_matrix.append(dict(counted_sample))
-    #
-    # X = vectorizer.transform(sparse_matrix)
-    # X = scaler.transform(X)
-    # y = output_scaler.transform(y)
-    # y = pd.DataFrame(y)
-    # y = y[y.columns[30:33]]
+
     # # Measure amount of time for predictions
     # t_1 = time.clock()
     # score = estimator.score(X,y)
