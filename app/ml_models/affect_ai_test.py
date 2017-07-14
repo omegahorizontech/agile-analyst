@@ -54,7 +54,10 @@ def test_creation():
 def test_training():
     # We try to pass in corpora to the affect_ai object we created earlier
     # We make sure its internal objects change as they should
+    t1 = time.clock()
     ai.train(input_frame, weights)
+    t2 = time.clock()
+    logging.info('train time: '+str(t2-t1)+" for "+str(len(ai.vocab))+" words.")
     assert len(ai.vocab) == len(lotsa_words)
     assert len(ai.weights) == len(weights)
 
