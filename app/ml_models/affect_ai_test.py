@@ -23,24 +23,25 @@ words = ['foo', 'bar', 'baz', 'goo', 'car', 'caz', 'hoo', 'dar', 'daz', 'ioo', '
 corpora = ['happiness 1', 'satisfaction 2', 'elation 2', 'elation 3']
 vocab_dict = {}
 weights = {}
+# Give each word in our vocab a corpus with which it's associated
 for word in lotsa_words:
     vocab_dict[word] = random.choice(corpora)
 for corpus in corpora:
     weights[corpus] = random.random()
 input_frame = pandas.DataFrame.from_dict(vocab_dict.items())
-# print input_frame
+# Prepare a small sample
 sample = str()
 for word in range(len(corpora)):
     sample += random.choice(lotsa_words)
     if word < len(corpora)-1:
         sample += ' '
-
+# Prepare a much larger sample
 sample_2 = str()
 for word in range(len(corpora)*1000000):
     sample_2 += random.choice(lotsa_words)
     if word < (len(corpora)*1000000)-1:
         sample_2 += ' '
-
+# Create our affect_ai instance
 ai = affect_ai.affect_AI()
 
 # Test that an affect_AI object gets created correctly
@@ -68,23 +69,16 @@ def test_scoring():
     ai.train(input_frame, weights)
     scored_corpora = Counter()
     final_scores = {}
-    # print 'sample.split:',sample.split(' ')
     for word in sample.split(' '):
-        # print 'this is word: ', word, 'this is the corpus we add:', vocab_dict[word]
+
         scored_corpora.update([vocab_dict[word]])
     for corpus in scored_corpora:
-        # print 'this is corpus: ', corpus
+
         final_scores[corpus] = scored_corpora[corpus] * weights[corpus]
 
     test_scores = ai.score(sample)
-    print 'this is test_scores:',test_scores
     for corpus in test_scores:
-        # corpus_parts = corpus.split(' ')
-        # corpus_symbol = corpus_parts[0][0] + '-' + corpus_parts[1]
-        # print 'corpus in test_scores'
-        # score_key = ai.corpora.keys()[ai.corpora.values().index(corpus)]
-        # print final_scores[score_key]
-        # print test_scores[corpus]
+
         assert final_scores[corpus] == test_scores[corpus]
 
 def test_compute():
