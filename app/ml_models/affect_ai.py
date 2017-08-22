@@ -43,8 +43,8 @@ class affect_AI:
         # Keep track of how many unique corpora we've seen, to help us assign each one a unique symbol.
         corp_num = 0
         # Take in each word, add all observed corpora and vocab to internal dictionaries.
-        for row in range(vocab.shape[0]):
-            self.vocab[vocab.iloc[row][0]] = vocab.iloc[row][1]
+        for row in range(len(vocab)):
+            self.vocab[vocab.iloc[row].name] = vocab.iloc[row][0]
         for value in Counter(self.vocab.values()):
             self.corpora[value] = corp_num
             corp_num += 1
