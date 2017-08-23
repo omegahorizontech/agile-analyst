@@ -43,10 +43,18 @@ class affect_AI:
         # Keep track of how many unique corpora we've seen, to help us assign each one a unique symbol.
         corp_num = 0
         # Take in each word, add all observed corpora and vocab to internal dictionaries.
+        unique_corpora = set()
         for row in range(len(vocab)):
-            self.vocab[vocab.iloc[row].name] = vocab.iloc[row][0]
-        for value in Counter(self.vocab.values()):
-            self.corpora[value] = corp_num
+            corpora = vocab.iloc[row][0]
+            self.vocab[vocab.iloc[row].name] = corpora
+            if type(corpora) == list():
+                for corpus in corpora:
+                    corpora_count.update([corpus])
+            else:
+                corpora_count.update([corpora])
+        print (corpora_count)
+        for key in corpora:
+            self.corpora[key] = corp_num
             corp_num += 1
         # Store the weights, and then turn stored corpora and keys for weights into symbols.
         self.weights = weights
