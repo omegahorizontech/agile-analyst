@@ -24,3 +24,12 @@ def train_model():
 def validate_model():
     response = controllers.validate_model()
     return response
+
+@ml_model.route('/simple_score')
+def simple_score():
+    r = request.get_json()
+    sample = r.get('sample')
+
+    response = controllers.simple_score(sample)
+
+    return response
