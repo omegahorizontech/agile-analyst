@@ -5,7 +5,7 @@ import copy
 
 # New direction: store vocab words in a single dictionary. Keep track of corpora. At the end, when all corpora have been tallied, generate a dictionary where each key is a corpus and each value is a number between 0 and the number of corpora. During scoring, the number value for each word is put into a counter, then converted into a dictionary for final reporting.
 
-class affect_AI:
+class Agile_Analyst:
     def __init__(self):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
         """
@@ -91,7 +91,7 @@ class affect_AI:
 
 
     def symbolify(self):
-        # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. Each symbol is simply a number assiged to each unique corpus.
+        # This method should only be called at the end of trianing. It reduces the corpora for each word in the agile_analyst's dictionary to a symbol. Each symbol is simply a number assiged to each unique corpus.
         for word in self.vocab:
             corp = self.vocab[word]
             # print(corp,word, type(corp))
