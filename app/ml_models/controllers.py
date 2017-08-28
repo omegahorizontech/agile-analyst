@@ -1,38 +1,26 @@
 from flask import jsonify
-import requests, operator, math, json, csv, os
-import matplotlib.pyplot as plt
-import affect_ai
-
-from sklearn.tree import DecisionTreeRegressor as DTR
-from sklearn.ensemble import RandomForestRegressor as RFR
-from sklearn.ensemble import ExtraTreesRegressor as ETR
-from sklearn.neural_network import MLPRegressor as MLPR
-from sklearn.multioutput import MultiOutputRegressor as MOR
-from sklearn.pipeline import Pipeline
-
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import cross_val_score as CVS
-from sklearn.model_selection import learning_curve
-
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import StandardScaler
-
-from sklearn.feature_extraction import DictVectorizer
+import requests, operator, math, json, csv, os, time
+import agile_analyst
 
 from sklearn.externals import joblib
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-
-from collections import Counter
-import time
 
 def hello():
     return 'hello machines'
 
 enc_samples = []
 y = []
+
+title = 'affect_ai_8-27-2017'
+aff_ai = joblib.load(title)
+# Do single sample lookup and scoring.
+def simple_score(sample):
+    scores = aff_ai.score(sample)
+    return scores
+
 # Read data from the csv
 # Place it into a dataframe
 def prepare_data(as_generator=False, text_encoder=False):

@@ -5,7 +5,7 @@ import copy
 
 # New direction: store vocab words in a single dictionary. Keep track of corpora. At the end, when all corpora have been tallied, generate a dictionary where each key is a corpus and each value is a number between 0 and the number of corpora. During scoring, the number value for each word is put into a counter, then converted into a dictionary for final reporting.
 
-class affect_AI:
+class Agile_Analyst:
     def __init__(self):
         # This is where we set up whatever objects we need for the hash table and dictionaries.
         """
@@ -44,19 +44,23 @@ class affect_AI:
         corp_num = 0
         # Take in each word, add all observed corpora and vocab to internal dictionaries.
         unique_corpora = set()
+        self.vocab = {}
         for row in range(len(vocab)):
             corpora = vocab.iloc[row][0]
             self.vocab[vocab.iloc[row].name] = corpora
             if type(corpora) == list():
                 for corpus in corpora:
-                    corpora_count.update([corpus])
+                    unique_corpora.update([corpus])
             else:
-                corpora_count.update([corpora])
-        print (corpora_count)
-        for key in corpora:
+                unique_corpora.update(corpora)
+        # print (unique_corpora)
+        self.corpora = {}
+        for key in unique_corpora:
+            # print('this is key:',key)
             self.corpora[key] = corp_num
             corp_num += 1
         # Store the weights, and then turn stored corpora and keys for weights into symbols.
+        # print(len(unique_corpora),self.corpora)
         self.weights = weights
         self.symbolify()
 
@@ -74,24 +78,25 @@ class affect_AI:
         sample = self.wordify(sample)
         for word in sample:
             # If we find a word from the sample in the vocab, then we should actually look it up.
-            # TODO: Use a list comprehension to lookup only those words in the vocab.
+            # Use a list comprehension to lookup only those words in the vocab.
             if word in self.vocab:
-                scores.update([self.vocab[word]])
-
+                scores.update(self.vocab[word])
+        # print(scores)
         for symbol in scores:
             # We need to multiply the score for each symbol by its weight for the corpus.
-            symbol_name = self.corpora.keys()[self.corpora.values().index(symbol)]
+            symbol_name = list(self.corpora.keys())[list(self.corpora.values()).index(symbol)]
             r_scores[symbol_name] = scores[symbol] * self.weights[symbol]
 
         return r_scores
 
 
     def symbolify(self):
-        # This method should only be called at the end of trianing. It reduces the corpora for each word in the affect_ai's dictionary to a symbol. These symbols are generated using the 'reduce_chars' method. Each symbol is the minimum number of characters required to differentiate it from another symbol, followed by a number for each corresponding tier within the corpus.
+        # This method should only be called at the end of trianing. It reduces the corpora for each word in the agile_analyst's dictionary to a symbol. Each symbol is simply a number assiged to each unique corpus.
         for word in self.vocab:
             corp = self.vocab[word]
+            # print(corp,word, type(corp))
             # If we have a list of corpus names for a word's membership, we have multiple symbols to replace.
-            if type(corp) == list():
+            if type(corp) == type(list()):
                 new_corpora = []
                 for corpus in corp:
                     # do the symbol replacement
@@ -103,7 +108,9 @@ class affect_AI:
         new_weights = {}
         # Now, we need to replace the corpus names in 'weights' with their matching symbol.
         for corpus in self.weights.keys():
-            new_weights[self.corpora[corpus]] = self.weights[corpus]
+            # print(corpus, self.corpora[corpus])
+            if corpus in self.corpora:
+                new_weights[self.corpora[corpus]] = self.weights[corpus]
         self.weights = new_weights
 
 
