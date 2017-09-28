@@ -5,7 +5,7 @@ from nltk.corpus import gutenberg
 from nltk.corpus import nps_chat
 from nltk.corpus import brown
 
-import controllers
+from . import controllers
 
 helpers = Blueprint('helpers', __name__)
 
@@ -103,11 +103,11 @@ def save_full_records_from_gutenberg(collection_name):
     for sent in guten_sents:
         sent = ' '.join(sent)
         if (count % 50) == 0:
-            print '===='
-            print 'Processed record: ' + str(count)
-            print '===='
+            print ('====')
+            print ('Processed record: ' + str(count))
+            print ('====')
         count = count + 1
-        print sent
+        print (sent)
         data = {
             "doc": sent,
             "lang": lang,
@@ -146,16 +146,16 @@ def save_full_records_from_nps_chat(collection_name):
     for post in chatroom:
         post = ' '.join(post)
         if (count % 50) == 0:
-            print '===='
-            print 'Processed record: ' + str(count)
-            print '===='
+            print ('====')
+            print ('Processed record: ' + str(count))
+            print ('====')
 
         if post == 'JOIN':
             pass
         elif post == 'PART':
             pass
         else:
-            print post
+            print (post)
             data = {
                 "doc": post,
                 "lang": lang,
@@ -196,11 +196,11 @@ def save_full_records_from_brown(collection_name):
     for sent in news_text_sent:
         sent = ' '.join(sent)
         if (count % 50) == 0:
-            print '===='
-            print 'Processed record: ' + str(count)
-            print '===='
+            print ('====')
+            print ('Processed record: ' + str(count))
+            print ('====')
         count = count + 1
-        print sent
+        print (sent)
         data = {
             "doc": sent,
             "lang": lang,

@@ -108,9 +108,6 @@ Running a single processor core:
 * scikit-learn==0.18.1
 * pandas==0.18.1
 
-# License
-MIT
-
 ## Implementation
 ### Feature Words Only
 
@@ -129,3 +126,6 @@ MIT
 
 ### Horizontal Feature Segmentation
   Another strategy would be to segment the full feature space. Feature segments of ~10k words each would be given to distinct models for regression learning. Each of these models would be responsible for only a portion of the final score for a given estimation, and some method would be used to combine their predictions together to get the final score. This feature segmentation modeling could be used in tandem with multioutput regression, leading to groups of several models for each output. The main challenge here would be mediating the complexity of many models working in tandem, and finding a way to consistently reduce error in what are known to be obligate suboptimal predictors, given their usage of only a portion of the feature space. This would be similar in practice to an ensemble method, but instead of subsequent ensemble members focusing on increasingly difficult predictions, the predictions are of approximately equal difficulty for each sub-model.
+
+# License
+MIT

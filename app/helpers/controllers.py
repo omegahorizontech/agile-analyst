@@ -52,9 +52,9 @@ def write_csv_from_json(collection_name, corpus_name, use_json_sentence, corpus_
         corpus_sents = brown.sents(categories=corpus_name)
 
 
-    print "===="
-    print "Writing CSV file from: '" + collection_name + "'"
-    print "==== Total records: " + str(affect_analysis.db[collection_name].count()) + " ===="
+    print ("====")
+    print ("Writing CSV file from: '" + collection_name + "'")
+    print ("==== Total records: " + str(affect_analysis.db[collection_name].count()) + " ====")
     csv_file = open(os.path.dirname(__file__) + '/../../data/' + collection_name + '(' + utc + ')' + '.csv', 'w')
     csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
     collection = affect_analysis.db[collection_name]
@@ -62,7 +62,7 @@ def write_csv_from_json(collection_name, corpus_name, use_json_sentence, corpus_
     emotion_list = ['sample_doc'] # This is the first coloumn header, more are appended
     for i in range(cursor.count()):
         if (i % 50) == 0:
-            print 'Processed record: ' + str(i)
+            print ('Processed record: ' + str(i))
         emotion_row_scores = []
         sample_sent = ''
         if use_json_sentence == '1':
@@ -81,8 +81,8 @@ def write_csv_from_json(collection_name, corpus_name, use_json_sentence, corpus_
         # CSV Write Data Row
         csv_writer.writerow(emotion_row_scores)
     csv_file.close()
-    print "===="
-    print "Finished CSV file from: '" + collection_name + "'"
-    print "===="
+    print ("====")
+    print ("Finished CSV file from: '" + collection_name + "'")
+    print ("====")
 
     return "Success"
