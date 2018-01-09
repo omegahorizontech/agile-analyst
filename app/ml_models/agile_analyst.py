@@ -85,6 +85,7 @@ class Agile_Analyst:
         for symbol in scores:
             # We need to multiply the score for each symbol by its weight for the corpus.
             symbol_name = list(self.corpora.keys())[list(self.corpora.values()).index(symbol)]
+            print('symbol_name:',symbol_name,"symbol:",symbol)
             r_scores[symbol_name] = scores[symbol] * self.weights[symbol]
 
         return r_scores
